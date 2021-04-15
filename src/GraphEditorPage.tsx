@@ -1,6 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { useLocalizer, useScreenWidthWithin } from "@/utils/hooks";
-import { appState } from "@/appState";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import GraphDisplay from "./ui/GraphDisplay";
 import GraphInputPanel from "./ui/GraphInputPanel";
 import { fromRandom, Graph } from "@/GraphStructure";
@@ -10,6 +8,7 @@ import cloneDeep from "lodash.clonedeep";
 import { EdgeRenderHint, GeneralRenderHint, GraphRenderType, NodeRenderHint } from "@/ui/CanvasGraphRenderer";
 import { Grid } from "semantic-ui-react";
 import AlgorithmSteps from "@/ui/AlgorithmSteps";
+import { Spi, SpiContext } from "@/spi";
 
 const GraphEditor: React.FC = props => {
   let g = fromRandom(10, 15, true, false, false, false);
@@ -25,12 +24,6 @@ const GraphEditor: React.FC = props => {
   const [algorithmName, setAlgorithmName] = useState<string>();
   const [codeType, setCodeType] = useState<string>();
   const [codePosition, setCodePosition] = useState<number>();
-
-  const _ = useLocalizer("graph_editor");
-
-  useEffect(() => {
-    appState.enterNewPage(_(".title"), "graph_editor");
-  }, [appState.locale]);
 
   useEffect(() => {
     setBackupGraph(cloneDeep(dataGraph));
@@ -52,7 +45,8 @@ const GraphEditor: React.FC = props => {
   const onGraphInput = useCallback(graph => setDataGraph(cloneDeep(graph)), [setDataGraph]);
   const onAlgorithmGraph = useCallback(graph => setDisplayGraph(cloneDeep(graph)), [setDisplayGraph]);
 
-  const isNarrowScreen = useScreenWidthWithin(0, 1024);
+  // const isNarrowScreen = useScreenWidthWithin(0, 1024);
+  const isNarrowScreen = false; // TODO
 
   const graphInputPanel = () => (
     <GraphInputPanel graph={dataGraph} renderType={renderType} setRenderType={setRenderType}

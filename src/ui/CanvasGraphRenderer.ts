@@ -3,8 +3,6 @@ import { Edge, Graph, Node } from "@/GraphStructure";
 import * as d3 from "d3";
 import cloneDeep from "lodash.clonedeep";
 import isEqual from "lodash.isequal";
-import { availableCodeFonts } from "@/misc/fonts";
-import { appState } from "@/appState";
 
 export interface GraphRenderType {
   directed: boolean;
@@ -81,10 +79,6 @@ const defaultRenderHints: RenderHints = {
     popupData: () => []
   }
 };
-
-function getCodeFont() {
-  return appState.userPreference?.font?.codeFontFace || availableCodeFonts[0] || "monospace";
-}
 
 class CanvasGraphRenderer {
   public nodes: D3SimulationNode[];
@@ -286,7 +280,7 @@ class CanvasGraphRenderer {
   }
 
   renderEdge(ctx: CanvasRenderingContext2D, edge: D3SimulationEdge) {
-    ctx.font = "15px " + getCodeFont();
+    ctx.font = "15px monospace";
     const {
       source: { x: sx, y: sy },
       target: { x: tx, y: ty },
@@ -331,7 +325,7 @@ class CanvasGraphRenderer {
   }
 
   renderNode(ctx: CanvasRenderingContext2D, node: D3SimulationNode) {
-    ctx.font = "20px " + getCodeFont();
+    ctx.font = "20px monospace";
     const nodeRadius = this.hint("general", "nodeRadius");
     const { x, y, graphNode } = node;
 

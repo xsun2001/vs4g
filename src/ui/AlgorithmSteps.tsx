@@ -1,10 +1,9 @@
 import { Comment, Header, Icon, Segment } from "semantic-ui-react";
-import MarkdownContent from "@/markdown/MarkdownContent";
-import React from "react";
+import React, { useContext } from "react";
 import style from "./AlgorithmSteps.module.less";
 import { codeMap } from "@/algorithms";
-import { useLocalizer } from "@/utils/hooks";
 import headerStyle from "@/ui/HeaderIconSizePatcher";
+import { Spi, SpiContext } from "@/spi";
 
 interface AlgorithmStepsProps {
   algorithmName: string;
@@ -13,7 +12,8 @@ interface AlgorithmStepsProps {
 }
 
 const AlgorithmSteps: React.FC<AlgorithmStepsProps> = props => {
-  const _ = useLocalizer("graph_editor");
+  const spi = useContext<Spi>(SpiContext);
+  const _ = spi.locale;
   const { algorithmName, codeType, codePosition } = props;
 
   const renderCodeLines: (element: (string | string[])[], idx?: number) => [JSX.Element[], number] = (
@@ -25,7 +25,7 @@ const AlgorithmSteps: React.FC<AlgorithmStepsProps> = props => {
       if (typeof line === "string") {
         ans.push(
           <Comment.Text key={idx} className={codePosition === idx ? style.currentStep : style.step}>
-            <MarkdownContent content={line} />
+            <spi.Markdown content={line} />
           </Comment.Text>
         );
         ++idx;

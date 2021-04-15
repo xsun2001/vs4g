@@ -1,16 +1,13 @@
 import { Button, Card, Dropdown, Form, Grid, Header, Segment } from "semantic-ui-react";
-import React, { Reducer, useEffect, useMemo, useReducer, useState } from "react";
+import React, { Reducer, useContext, useEffect, useReducer, useState } from "react";
 import { algorithms, codeMap, newAlgorithm } from "@/algorithms";
-import { useLocalizer } from "@/utils/hooks";
 import { GraphAlgorithm, ParameterDescriptor, Step } from "@/GraphAlgorithm";
 import { Graph } from "@/GraphStructure";
 import cloneDeep from "lodash.clonedeep";
-import MarkdownContent from "@/markdown/MarkdownContent";
-import { appState } from "@/appState";
-import { generateCodeFontEditorOptions } from "@/misc/fonts";
 import "./FomanticClearableDropdownPatcher.css";
 import headerStyle from "@/ui/HeaderIconSizePatcher";
 import legends from "@/algorithms/legends";
+import { Spi, SpiContext } from "@/spi";
 
 interface AlgorithmControlProps {
   dataGraph: Graph;
@@ -146,7 +143,8 @@ const reducer = (state, action) => {
 };
 
 let AlgorithmControl: React.FC<AlgorithmControlProps> = props => {
-  const _ = useLocalizer("graph_editor");
+  const spi = useContext<Spi>(SpiContext);
+  const _ = spi.locale;
 
   // States
   const [runner, runnerDispatch] = useReducer<Reducer<AlgorithmRunner, any>>(
@@ -356,12 +354,11 @@ let AlgorithmControl: React.FC<AlgorithmControlProps> = props => {
   // -----
 
   // -----
-  const codeOption = useMemo(() => generateCodeFontEditorOptions(appState.locale), [appState.locale]);
   const fallbackRenderer = (data: any) => (
     <span
       style={{
-        fontFamily: codeOption.fontFamily,
-        fontSize: codeOption.fontSize
+        fontFamily: spi.codeFontFamily(),
+        fontSize: spi.codeFontSize()
       }}
     >
       {JSON.stringify(data)}
@@ -379,7 +376,7 @@ let AlgorithmControl: React.FC<AlgorithmControlProps> = props => {
             <Card key={name}>
               <Card.Content>
                 <Card.Header>
-                  <MarkdownContent content={name} />
+                  <spi.Markdown content={name} />
                 </Card.Header>
                 <Card.Meta>{`Type: ${type}`}</Card.Meta>
               </Card.Content>
@@ -398,8 +395,8 @@ let AlgorithmControl: React.FC<AlgorithmControlProps> = props => {
         <Segment color="green" attached="bottom">
           <span
             style={{
-              fontFamily: codeOption.fontFamily,
-              fontSize: codeOption.fontSize
+              fontFamily: spi.codeFontFamily(),
+              fontSize: spi.codeFontSize()
             }}
           >
             {JSON.stringify(result)}
@@ -415,10 +412,10 @@ let AlgorithmControl: React.FC<AlgorithmControlProps> = props => {
         <Header as="h4" className={headerStyle} block attached="top" icon="tag" content="图例" />
         <Segment attached="bottom">
           <pre style={{
-              overflowX: "auto",
-              wordWrap: "break-word",
-              whiteSpace: "pre-wrap",
-            }}>
+            overflowX: "auto",
+            wordWrap: "break-word",
+            whiteSpace: "pre-wrap"
+          }}>
             {legends[algorithmName]}
           </pre>
         </Segment>

@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Dropdown, Header, Menu, Segment } from "semantic-ui-react";
 import { Graph } from "@/GraphStructure";
 import methods from "@/ui/input-methods";
-import { useLocalizer, useScreenWidthWithin } from "@/utils/hooks";
 import { GraphRenderType } from "@/ui/CanvasGraphRenderer";
 import headerStyle from "./HeaderIconSizePatcher";
+import { Spi, SpiContext } from "@/spi";
 
 interface GraphInputPanelProps {
   graph: Graph;
@@ -13,10 +13,12 @@ interface GraphInputPanelProps {
   setRenderType: (renderType: GraphRenderType) => void;
 }
 
-export interface MethodComponent extends React.FC<GraphInputPanelProps> {}
+export interface MethodComponent extends React.FC<GraphInputPanelProps> {
+}
 
 let GraphInputPanel: React.FC<GraphInputPanelProps> = props => {
-  const _ = useLocalizer("graph_editor");
+  const spi = useContext<Spi>(SpiContext);
+  const _ = spi.locale;
   const [selectedMethod, setSelectedMethods] = useState("random");
   const onMenuItemClicked = (_, { name }) => {
     setSelectedMethods(name);
@@ -24,7 +26,8 @@ let GraphInputPanel: React.FC<GraphInputPanelProps> = props => {
   const onDropdownSelected = (_, { value }) => {
     setSelectedMethods(value);
   };
-  const isNarrowScreen = useScreenWidthWithin(0, 1024);
+  // const isNarrowScreen = useScreenWidthWithin(0, 1024);
+  const isNarrowScreen = false; // TODO
   return (
     <>
       <Header as="h4" className={headerStyle} block attached="top" icon="edit" content={_(".ui.input_panel")} />

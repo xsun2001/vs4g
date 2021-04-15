@@ -1,9 +1,7 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Form, Message } from "semantic-ui-react";
-import { useLocalizer } from "@/utils/hooks";
 import { CheckboxProps } from "semantic-ui-react/dist/commonjs/modules/Checkbox/Checkbox";
-import CodeEditor from "@/components/CodeEditor";
-import "./MonacoEditorPatcher.css";
+import { Spi, SpiContext } from "@/spi";
 
 interface MatrixInputProps {
   initContent: string;
@@ -13,7 +11,8 @@ interface MatrixInputProps {
 }
 
 let MatrixInputComponent: React.FC<MatrixInputProps> = props => {
-  const _ = useLocalizer("graph_editor");
+  const spi = useContext<Spi>(SpiContext);
+  const _ = spi.locale;
   let { initContent, initError, options, onSync } = props;
   const [content, setContent] = useState<string>(initContent);
   const [error, _setError] = useState<string>(initError);
@@ -61,14 +60,9 @@ let MatrixInputComponent: React.FC<MatrixInputProps> = props => {
     <Form onSubmit={onFormSubmit} error={error !== undefined}>
       <Form.Field>
         <label>Matrix</label>
-        <CodeEditor
-          language={null}
+        <spi.CodeEditor
           value={content}
           onChange={onTextAreaChange}
-          options={{
-            minimap: { enabled: false },
-            dimension: { width: null, height: 200 }
-          }}
         />
       </Form.Field>
       <Form.Group inline>

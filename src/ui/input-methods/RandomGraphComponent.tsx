@@ -1,11 +1,12 @@
 import { MethodComponent } from "@/ui/GraphInputPanel";
 import { Form, Message } from "semantic-ui-react";
-import React, { useState } from "react";
-import { useLocalizer } from "@/utils/hooks";
+import React, { useContext, useState } from "react";
 import { fromRandom } from "@/GraphStructure";
+import { Spi, SpiContext } from "@/spi";
 
 let RandomGraphComponent: MethodComponent = props => {
-  const _ = useLocalizer("graph_editor");
+  const spi = useContext<Spi>(SpiContext);
+  const _ = spi.locale;
   let { graph, setGraph, setRenderType } = props;
   const [error, setError] = useState<string>();
 

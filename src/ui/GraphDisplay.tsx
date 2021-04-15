@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer } from "react";
+import React, { useContext, useEffect, useReducer } from "react";
 import { Edge, Graph, Node } from "../GraphStructure";
 import { SimulationLinkDatum, SimulationNodeDatum } from "d3-force";
 import { Card, Header, Segment } from "semantic-ui-react";
@@ -11,8 +11,7 @@ import CanvasGraphRenderer, {
 } from "./CanvasGraphRenderer";
 import legends from "../algorithms/legends.js";
 import headerStyle from "@/ui/HeaderIconSizePatcher";
-import { useLocalizer } from "@/utils/hooks";
-import MarkdownContent from "@/markdown/MarkdownContent";
+import { Spi, SpiContext } from "@/spi";
 
 interface GraphDisplayProp {
   algorithmName: string;
@@ -41,7 +40,8 @@ function toD3EdgeDatum(edge: Edge): D3SimulationEdge {
 }
 
 let GraphDisplay: React.FC<GraphDisplayProp> = props => {
-  const _ = useLocalizer("graph_editor");
+  const spi = useContext<Spi>(SpiContext);
+  const _ = spi.locale;
   const {
     algorithmName,
     dataGraph,
@@ -56,7 +56,7 @@ let GraphDisplay: React.FC<GraphDisplayProp> = props => {
     return renderer;
   };
   const [renderer, dispatch] = useReducer(reducer, new CanvasGraphRenderer());
-  const { width, ref: resizeRef } = useResizeDetector<HTMLDivElement>();
+  const { width, ref: resizeRef } = useResizeDetector();
   const height = width * 0.625; // 16:10
 
   useEffect(() => {
@@ -98,7 +98,7 @@ let GraphDisplay: React.FC<GraphDisplayProp> = props => {
             <Card.Content>
               <Card.Header>图例</Card.Header>
               <Card.Description>
-                <MarkdownContent content={legends[algorithmName]} />
+                <spi.Markdown content={legends[algorithmName]} />
               </Card.Description>
             </Card.Content>
           </Card>
