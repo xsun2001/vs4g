@@ -1,9 +1,8 @@
-import { Comment, Header, Icon, Segment } from "semantic-ui-react";
-import React, { useContext } from "react";
+import { Accordion, Comment } from "semantic-ui-react";
+import React, { useContext, useState } from "react";
 import style from "./AlgorithmSteps.module.less";
-import { codeMap } from "@/algorithms";
-import headerStyle from "@/ui/HeaderIconSizePatcher";
 import { Spi, SpiContext } from "@/spi";
+import { codeMap } from "@/algorithms";
 
 interface AlgorithmStepsProps {
   algorithmName: string;
@@ -15,12 +14,16 @@ const AlgorithmSteps: React.FC<AlgorithmStepsProps> = props => {
   const spi = useContext<Spi>(SpiContext);
   const _ = spi.locale;
   const { algorithmName, codeType, codePosition } = props;
+  const [active, setActive] = useState<boolean>(false);
 
-  const renderCodeLines: (element: (string | string[])[], idx?: number) => [JSX.Element[], number] = (
+  const onAccordionClick = () => setActive(!active);
+
+  const renderCodeLines: (element: (string | string[])[]) => [JSX.Element[], number, string] = React.useCallback((
     element,
     idx = 0
   ) => {
     let ans: JSX.Element[] = [];
+    let selected: string;
     for (let line of element) {
       if (typeof line === "string") {
         ans.push(
@@ -28,30 +31,46 @@ const AlgorithmSteps: React.FC<AlgorithmStepsProps> = props => {
             <spi.Markdown content={line} />
           </Comment.Text>
         );
+        if (codePosition === idx) {
+          selected = line;
+        }
         ++idx;
       } else {
-        let rec = renderCodeLines(line, idx);
-        ans.push(<Comment.Group key={idx}>{rec[0]}</Comment.Group>);
-        idx += rec[1];
+        let res = renderCodeLines(line);
+        ans.push(<Comment.Group key={idx}>{res[0]}</Comment.Group>);
+        idx += res[1];
+        if (res[2] != null) {
+          selected = res[2];
+        }
       }
     }
-    return [ans, idx];
-  };
+    return [ans, idx, selected];
+  }, [codePosition, spi]);
+
+  const rendered: [JSX.Element[], number, string] = React.useMemo(() => {
+    if (algorithmName && codeType)
+      return renderCodeLines(codeMap[algorithmName][codeType]);
+    else
+      return [null, 0, null];
+  }, [algorithmName, codeType, renderCodeLines]);
 
   return (
-    <>
-      <Header as="h4" className={headerStyle} block attached="top" icon="code" content={_(".ui.code_display")} />
-      <Segment attached="bottom" placeholder={!(algorithmName && codeType)}>
-        {algorithmName && codeType ? (
-          <Comment.Group>{renderCodeLines(codeMap[algorithmName][codeType])[0]}</Comment.Group>
-        ) : (
-          <Header icon>
-            <Icon name="question circle outline" />
-            {_(".ui.no_codetype")}
-          </Header>
-        )}
-      </Segment>
-    </>
+    <Accordion styled>
+      <Accordion.Title
+        active={active}
+        onClick={onAccordionClick}
+      >
+        {active ? "Code Display" :
+          rendered[2] == null ? "Please select algorithm" :
+            (<spi.Markdown content={rendered[2]} />)
+        }
+      </Accordion.Title>
+      <Accordion.Content
+        active={active}
+      >
+        {rendered[0]}
+      </Accordion.Content>
+    </Accordion>
   );
 };
 
