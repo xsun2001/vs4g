@@ -1,8 +1,7 @@
 import { Force, SimulationLinkDatum, SimulationNodeDatum } from "d3-force";
 import { Edge, Graph, Node } from "@/GraphStructure";
 import * as d3 from "d3";
-import cloneDeep from "lodash.clonedeep";
-import isEqual from "lodash.isequal";
+import { GraphRenderer } from "@/ui/GraphRenderer";
 
 export interface GraphRenderType {
   directed: boolean;
@@ -80,22 +79,25 @@ const defaultRenderHints: RenderHints = {
   }
 };
 
-class CanvasGraphRenderer {
+class CanvasGraphRenderer implements GraphRenderer {
   public nodes: D3SimulationNode[];
   public edges: D3SimulationEdge[];
-  public graphCache: Graph;
+  public graphInitialized: boolean = false;
   public canvas: HTMLCanvasElement;
   public simulation: d3.Simulation<D3SimulationNode, D3SimulationEdge>;
   public patcher: DeepPartial<RenderHints>;
-  public renderType: GraphRenderType = {
-    directed: true,
-    bipartite: false,
-    dmp: false
-  };
+  public directed: boolean;
+  public renderType: "generic" | "bipartite";
   public size: {
     width: number;
     height: number;
   };
+
+  constructor(directed: boolean, renderType: "generic" | "bipartite", patcher: DeepPartial<RenderHints>) {
+    this.directed = directed;
+    this.renderType = renderType;
+    this.patcher = patcher;
+  }
 
   hint(category: string, name: string, ...args: any[]) {
     if (defaultRenderHints[category]?.[name] == null) {
@@ -112,23 +114,18 @@ class CanvasGraphRenderer {
 
   // update function
   // modify information and try to start/restart simulation and rendering
-  updateGraph(args: { graph: Graph; newGraph?: boolean }) {
-    const { graph, newGraph } = args;
-    if (isEqual(graph, this.graphCache)) {
-      return;
-    }
+  updateGraph(graph: Graph) {
     const nodes = graph.nodes().map(toD3NodeDatum);
     const edges = graph.edges().map(toD3EdgeDatum);
-    if (newGraph) {
-      this.simulation?.stop();
+    if (!this.graphInitialized) {
       this.nodes = nodes;
       this.edges = edges;
-      this.initSimulation();
-      this.simulation
-        .force("center", d3.forceCenter(this.size.width / 2, this.size.height / 2))
-        .force("box", this.boxConstraint());
-      this.mountDragCallback();
-      this.simulation.restart();
+      this.simulation = d3
+        .forceSimulation(this.nodes)
+        .force("link", d3.forceLink(this.edges).distance(edge => edge.graphEdge.datum.weight || 30)) // default id implement may work
+        .force("charge", d3.forceManyBody().strength(this.hint("general", "simulationForceManyBodyStrength")))
+        .on("tick", () => this.render())
+        .stop();
     } else {
       // fix position of nodes and copy edges
       this.simulation.stop();
@@ -139,61 +136,47 @@ class CanvasGraphRenderer {
       // should we deep copy?
       this.edges = edges;
       // reset link force
-      this.simulation.force(
-        "link",
-        d3.forceLink(this.edges).distance(edge => edge.graphEdge.datum.weight || 30)
-      );
+      this.simulation.force("link", d3.forceLink(this.edges).distance(edge => edge.graphEdge.datum.weight || 30));
       // restart behaviour?
       this.simulation.restart();
     }
-    this.graphCache = cloneDeep(graph);
   }
 
-  updateRenderHint(args: { patcher: DeepPartial<RenderHints> }) {
-    this.patcher = args.patcher;
-    this.simulation.restart();
-  }
-
-  updateCanvas(args: { canvas: HTMLCanvasElement }) {
-    const { canvas } = args;
-    if (canvas == null) return;
-    this.updateSize({ width: canvas.clientWidth, height: canvas.clientHeight });
-    if (this.canvas) return;
-    this.canvas = canvas;
-    this.mountDragCallback();
-  }
-
-  updateSize(args: { width: number; height: number }) {
-    const { width, height } = args;
-    if (width == this.size?.width && height == this.size?.height) return;
-    this.size = args;
-    this.simulation
-      .force("center", d3.forceCenter(width / 2, height / 2).strength(0.05))
-      .force("box", this.boxConstraint())
-      .restart();
-  }
-
-  updateRenderType(args: { renderType: GraphRenderType }) {
-    if (args.renderType == null) {
-      return;
-    }
-    if (args.renderType.bipartite) {
-      const bipartiteForce: Force<any, any> = () => {
-        this.nodes.forEach(node => {
-          const side = node.graphNode.datum.side;
-          if (side == "left") node.x = this.size.width * 0.382;
-          if (side == "right") node.x = this.size.width * 0.618;
+  bindCanvas(canvas: HTMLCanvasElement): void {
+    if (this.canvas == null && canvas != null) {
+      this.canvas = canvas;
+      // Update size
+      let width = canvas.width, height = canvas.height;
+      this.size = { width, height };
+      // Set center & box forces
+      if (this.renderType === "generic") {
+        this.simulation.force("center", d3.forceCenter(width / 2, height / 2).strength(0.05));
+      } else if (this.renderType === "bipartite") {
+        this.simulation.force("bipartite", this.bipartiteConstraint());
+      }
+      this.simulation
+        .force("box", this.boxConstraint())
+        .restart();
+      // Register drag behavior
+      const drag = d3
+        .drag<HTMLCanvasElement, SimulationNodeDatum | undefined>()
+        .subject(event => this.simulation.find(event.x, event.y))
+        .on("start", event => {
+          if (!event.active) this.simulation.alphaTarget(0.3).restart();
+          if (this.renderType === "generic") event.subject.fx = event.subject.x;
+          event.subject.fy = event.subject.y;
+        })
+        .on("drag", event => {
+          if (this.renderType === "generic") event.subject.fx = this.xInRange(event.x);
+          event.subject.fy = this.yInRange(event.y);
+        })
+        .on("end", event => {
+          if (!event.active) this.simulation.alphaTarget(0);
+          if (this.renderType === "generic") event.subject.fx = null;
+          event.subject.fy = null;
         });
-      };
-      this.simulation.force("bipartite", bipartiteForce);
-    } else {
-      this.simulation.force("bipartite");
+      d3.select<HTMLCanvasElement, any>(this.canvas).call(drag);
     }
-    if (args.renderType.dmp) {
-      //TODO
-    }
-    Object.assign(this.renderType, args.renderType);
-    this.simulation.restart();
   }
 
   private static makeInRange(n: number, a: number, b: number): number {
@@ -227,39 +210,13 @@ class CanvasGraphRenderer {
     };
   }
 
-  initSimulation() {
-    this.simulation = d3
-      .forceSimulation(this.nodes)
-      .force(
-        "link",
-        d3.forceLink(this.edges).distance(edge => edge.graphEdge.datum.weight || 30)
-      ) // default id implement may work
-      .force("charge", d3.forceManyBody().strength(this.hint("general", "simulationForceManyBodyStrength")))
-      .on("tick", () => this.render())
-      .stop();
-  }
-
-  mountDragCallback() {
-    if (this.simulation == null || this.canvas == null) return;
-
-    const drag = d3
-      .drag<HTMLCanvasElement, SimulationNodeDatum | undefined>()
-      .subject(event => this.simulation.find(event.x, event.y))
-      .on("start", event => {
-        if (!event.active) this.simulation.alphaTarget(0.3).restart();
-        if (!this.renderType.bipartite) event.subject.fx = event.subject.x;
-        event.subject.fy = event.subject.y;
-      })
-      .on("drag", event => {
-        if (!this.renderType.bipartite) event.subject.fx = this.xInRange(event.x);
-        event.subject.fy = this.yInRange(event.y);
-      })
-      .on("end", event => {
-        if (!event.active) this.simulation.alphaTarget(0);
-        if (!this.renderType.bipartite) event.subject.fx = null;
-        event.subject.fy = null;
+  private bipartiteConstraint(): Force<any, any> {
+    return () => {
+      this.nodes.forEach(node => {
+        node.x = this.size.width * (node.graphNode.datum.size === "left" ? 0.333 : 0.667);
+        node.y = this.yInRange(node.y);
       });
-    d3.select<HTMLCanvasElement, any>(this.canvas).call(drag);
+    };
   }
 
   render() {
@@ -297,7 +254,7 @@ class CanvasGraphRenderer {
     ctx.stroke();
 
     // Draw arrow
-    if (this.renderType.directed) {
+    if (this.directed) {
       const dx = tx - sx,
         dy = ty - sy;
       const distance = Math.sqrt(dx * dx + dy * dy);
@@ -345,6 +302,11 @@ class CanvasGraphRenderer {
     ctx.fillText(this.hint("node", "floatingData", graphNode), x, y);
 
     // TODO: Render popup data
+  }
+
+  finish(): void {
+    this.simulation.stop();
+    d3.select(this.canvas).on(".drag", null);
   }
 }
 

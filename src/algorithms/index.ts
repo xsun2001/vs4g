@@ -1,4 +1,4 @@
-import { GraphAlgorithm } from "@/GraphAlgorithm";
+import { GraphAlgorithm, NewGraphAlgorithm } from "@/GraphAlgorithm";
 import codeMap from "./codeMap";
 
 import { BfsFindPath } from "@/algorithms/BFS&DFS/BfsFindPath";
@@ -8,7 +8,7 @@ import { EulerPath } from "@/algorithms/EulerPath/EulerPath";
 import { HamiltonPath } from "@/algorithms/HamiltonPath/HamiltonPath";
 import { Kruskal } from "@/algorithms/MST/Kruskal";
 import { Prim } from "@/algorithms/MST/Prim";
-import { Dijkstra } from "@/algorithms/SSSP/Dijkstra";
+import { Dijkstra, NewDijkstra } from "@/algorithms/SSSP/Dijkstra";
 import { Ford } from "@/algorithms/SSSP/Ford";
 import { SalesmanPath } from "@/algorithms/TravelingSalesmanProblem/TravelingSalesmanProb";
 import { SalesmanCheaperAlgo } from "@/algorithms/TravelingSalesmanProblem/SalesmanCheaperAlgo";
@@ -22,6 +22,8 @@ import { HungarianDFS } from "@/algorithms/matching/BipartiteMatching";
 import { KuhnMunkres } from "@/algorithms/matching/WeightedBipartiteMatching";
 import { Gabow } from "@/algorithms/matching/Matching";
 import { DMP } from "@/algorithms/planargraph/DMP";
+
+const newAlgorithms: NewGraphAlgorithm[] = [new NewDijkstra()];
 
 const algorithms = new Map<string, () => GraphAlgorithm>([
   ["BFS", () => new BfsFindPath()],
@@ -48,4 +50,4 @@ const algorithms = new Map<string, () => GraphAlgorithm>([
 
 const newAlgorithm = name => algorithms.get(name)?.();
 
-export { algorithms, codeMap, newAlgorithm };
+export { algorithms, codeMap, newAlgorithm, newAlgorithms };

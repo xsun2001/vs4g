@@ -1,5 +1,7 @@
 import { Graph } from "./GraphStructure";
 import { EdgeRenderHint, NodeRenderHint } from "@/ui/CanvasGraphRenderer";
+import { GraphInputComponent } from "@/ui/GraphInputComponent";
+import { GraphRenderer } from "@/ui/GraphRenderer";
 
 // check if res = Number(text) is an integer and res \in [lowerbound, upperbound)
 export function parseRangedInt(text: string, lowerbound: number, upperbound: number): number {
@@ -26,7 +28,8 @@ class Step {
     public readonly graph: Graph,
     public readonly codePosition?: Map<string, number>,
     public readonly extraData?: [string, string, any][]
-  ) {}
+  ) {
+  }
 }
 
 abstract class GraphAlgorithm {
@@ -50,6 +53,15 @@ abstract class GraphAlgorithm {
   abstract nodeRenderPatcher(): Partial<NodeRenderHint>;
 
   abstract edgeRenderPatcher(): Partial<EdgeRenderHint>;
+}
+
+export interface NewGraphAlgorithm {
+  category: string;
+  name: string;
+  description: string;
+  run: (graph: Graph, ...args: any[]) => Generator<Step>;
+  graphInputComponent: GraphInputComponent;
+  graphRenderer: GraphRenderer;
 }
 
 export { GraphAlgorithm, Step };

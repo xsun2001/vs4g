@@ -55,7 +55,7 @@ let GraphDisplay: React.FC<GraphDisplayProp> = props => {
     renderer[action.type](action);
     return renderer;
   };
-  const [renderer, dispatch] = useReducer(reducer, new CanvasGraphRenderer());
+  const [renderer, dispatch] = useReducer(reducer, new CanvasGraphRenderer(false, "generic", null));
   const { width, ref: resizeRef } = useResizeDetector();
   const height = width * 0.625; // 16:10
 
