@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { NewGraphAlgorithm } from "@/GraphAlgorithm";
 import { newAlgorithms } from "@/algorithms";
 import { Form } from "semantic-ui-react";
+import { GraphEditorContext } from "@/GraphEditorContext";
 
 let AlgorithmSelector: React.FC = props => {
+  const { algorithm, controlStep } = useContext(GraphEditorContext);
   const categories = new Map<string, Map<string, NewGraphAlgorithm>>();
   newAlgorithms.forEach(algo => {
     const cat = algo.category;
@@ -13,11 +15,15 @@ let AlgorithmSelector: React.FC = props => {
       categories.set(cat, new Map<string, NewGraphAlgorithm>([[algo.name, algo]]));
     }
   });
-  const [selectedCategory, setSelectedCategory] = useState<string>();
-  const [selectedAlgorithm, setSelectedAlgorithm] = useState<string>();
+  const [selectedCategory, setSelectedCategory] = useState<string>(algorithm.value?.category);
+  const [selectedAlgorithm, setSelectedAlgorithm] = useState<string>(algorithm.value?.description);
 
   const onChange: (func: (newValue: string) => void) => ((_, { value: string }) => void)
     = func => ((_, { value }) => func(value));
+  const onConfirm = () => {
+    algorithm.set(categories.get(selectedCategory).get(selectedAlgorithm));
+    controlStep.set(1);
+  };
 
   return (
     <Form>
@@ -32,6 +38,7 @@ let AlgorithmSelector: React.FC = props => {
             text: key
           }))}
           onChange={onChange(setSelectedCategory)}
+          defaultValue={selectedCategory}
         />
         <Form.Select
           fluid
@@ -43,11 +50,13 @@ let AlgorithmSelector: React.FC = props => {
             text: key
           }))}
           onChange={onChange(setSelectedAlgorithm)}
+          defaultValue={selectedAlgorithm}
         />
       </Form.Group>
       <Form.Button
         disabled={categories.get(selectedCategory)?.get(selectedAlgorithm) == null}
         color="green"
+        onClick={onConfirm}
       >
         Next Step
       </Form.Button>

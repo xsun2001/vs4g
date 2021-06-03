@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useContext } from "react";
 import { Segment, Step } from "semantic-ui-react";
 import AlgorithmSelector from "@/ui/AlgorithmSelector";
+import { GraphEditorContext } from "@/GraphEditorContext";
 
 const ControlCenter: React.FC = prop => {
     const steps = [
@@ -25,11 +26,11 @@ const ControlCenter: React.FC = prop => {
         component: (<>4</>)
       }
     ];
-    const [currentStep, setCurrentStep] = useState<number>(0);
+    const { controlStep } = useContext(GraphEditorContext);
     const onStepClicked = (_, { title }) => {
       for (let i = 0; i < steps.length; i++) {
         if (title === steps[i].title) {
-          setCurrentStep(i);
+          controlStep.set(i);
           return;
         }
       }
@@ -41,17 +42,14 @@ const ControlCenter: React.FC = prop => {
           <Step
             key={steps[i].key}
             title={steps[i].title}
-            active={i === currentStep}
-            disabled={i > currentStep}
-            link={i <= currentStep}
+            active={i === controlStep.value}
+            disabled={i > controlStep.value}
+            link={i <= controlStep.value}
             onClick={onStepClicked}
           />
         );
       }
       return stepComponents;
-    };
-    const nextStep = () => {
-      setCurrentStep(Math.min(currentStep + 1, steps.length - 1));
     };
     return (
       <>
@@ -59,7 +57,7 @@ const ControlCenter: React.FC = prop => {
           {renderSteps()}
         </Step.Group>
         <Segment attached>
-          {steps[currentStep].component}
+          {steps[controlStep.value].component}
         </Segment>
       </>
     );

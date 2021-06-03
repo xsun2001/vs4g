@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import GraphDisplay from "./ui/GraphDisplay";
 import GraphInputPanel from "./ui/GraphInputPanel";
 import { fromRandom, Graph } from "@/GraphStructure";
@@ -6,12 +6,23 @@ import AlgorithmControl from "@/ui/AlgorithmControl";
 import { newAlgorithm } from "@/algorithms";
 import cloneDeep from "lodash.clonedeep";
 import { EdgeRenderHint, GeneralRenderHint, GraphRenderType, NodeRenderHint } from "@/ui/CanvasGraphRenderer";
-import { Grid } from "semantic-ui-react";
+import { Container } from "semantic-ui-react";
 import AlgorithmSteps from "@/ui/AlgorithmSteps";
-import { Spi, SpiContext } from "@/spi";
+import ControlCenter from "@/ui/ControlCenter";
+import { fromReactState, GlobalVariable, GraphEditorContext } from "@/GraphEditorContext";
+import { NewGraphAlgorithm } from "@/GraphAlgorithm";
 
 const GraphEditor: React.FC = props => {
   let g = fromRandom(10, 15, true, false, false, false);
+
+  const [graph, setGraph] = useState<Graph>();
+  const [algorithm, setAlgorithm] = useState<NewGraphAlgorithm>();
+  const [controlStep, setControlStep] = useState<number>(0);
+  const context: GlobalVariable = {
+    graph: fromReactState<Graph>([graph, setGraph]),
+    algorithm: fromReactState<NewGraphAlgorithm>([algorithm, setAlgorithm]),
+    controlStep: fromReactState<number>([controlStep, setControlStep])
+  };
 
   // TODO: use context
   const [dataGraph, setDataGraph] = useState<Graph>(cloneDeep(g));
@@ -76,23 +87,28 @@ const GraphEditor: React.FC = props => {
     <AlgorithmSteps algorithmName={algorithmName} codeType={codeType} codePosition={codePosition} />
   );
 
-  return isNarrowScreen ? (
-    <>
-      {graphInputPanel()}
-      {graphDisplay()}
-      {algorithmControl()}
-      {algorithmSteps()}
-    </>
-  ) : (
-    <Grid>
-      <Grid.Column width={11}>
-        {graphInputPanel()}
-        {graphDisplay()}
-        {algorithmSteps()}
-      </Grid.Column>
-      <Grid.Column width={5}>{algorithmControl()}</Grid.Column>
-    </Grid>
-  );
+  // return isNarrowScreen ? (
+  //   <>
+  //     {graphInputPanel()}
+  //     {graphDisplay()}
+  //     {algorithmControl()}
+  //     {algorithmSteps()}
+  //   </>
+  // ) : (
+  //   <Grid>
+  //     <Grid.Column width={11}>
+  //       {graphInputPanel()}
+  //       {graphDisplay()}
+  //       {algorithmSteps()}
+  //     </Grid.Column>
+  //     <Grid.Column width={5}>{algorithmControl()}</Grid.Column>
+  //   </Grid>
+  // );
+  return <GraphEditorContext.Provider value={context}>
+    <Container>
+      <ControlCenter />
+    </Container>
+  </GraphEditorContext.Provider>;
 };
 
 export default GraphEditor;

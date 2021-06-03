@@ -2,16 +2,11 @@ import React from "react";
 import ReactDOM from "react-dom";
 import reportWebVitals from "./reportWebVitals";
 import "semantic-ui-css/semantic.css";
-import { Container, Segment } from "semantic-ui-react";
-import AlgorithmSelector from "@/ui/AlgorithmSelector";
+import GraphEditor from "@/GraphEditorPage";
 
 ReactDOM.render(
   <React.StrictMode>
-    <Container>
-      <Segment>
-        <AlgorithmSelector/>
-      </Segment>
-    </Container>
+    <GraphEditor />
   </React.StrictMode>,
   document.getElementById("root")
 );
