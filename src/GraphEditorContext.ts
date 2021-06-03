@@ -16,6 +16,7 @@ export interface GlobalVariable {
   graph: State<Graph>
   algorithm: State<NewGraphAlgorithm>
   controlStep: State<number>
+  parameters: State<any[]>
 }
 
 export const GraphEditorContext = createContext<GlobalVariable>(null);

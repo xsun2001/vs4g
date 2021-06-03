@@ -1,4 +1,4 @@
-import { GraphAlgorithm, NewGraphAlgorithm, ParameterDescriptor, Step } from "@/GraphAlgorithm";
+import { GraphAlgorithm, NewGraphAlgorithm, ParameterDescriptor, rangedIntParser, Step } from "@/GraphAlgorithm";
 import CanvasGraphRenderer, { EdgeRenderHint, NodeRenderHint } from "@/ui/CanvasGraphRenderer";
 import { AdjacencyMatrix, Graph } from "@/GraphStructure";
 import { GraphRenderer } from "@/ui/GraphRenderer";
@@ -40,6 +40,12 @@ export class NewDijkstra implements NewGraphAlgorithm {
       }
     });
   name: string = "dijkstra";
+  parameters: ParameterDescriptor[] = [
+    {
+      name: "start_point",
+      parser: rangedIntParser(0, (_, graph) => graph.nodes().length)
+    }
+  ];
 
   * run(graph: Graph, startPoint: number): Generator<Step> {
     let mat = AdjacencyMatrix.from(graph, true).mat.map(line => line.map(datum => (datum ? datum.weight || 1 : 0)));

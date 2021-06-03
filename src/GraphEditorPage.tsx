@@ -18,10 +18,12 @@ const GraphEditor: React.FC = props => {
   const [graph, setGraph] = useState<Graph>();
   const [algorithm, setAlgorithm] = useState<NewGraphAlgorithm>();
   const [controlStep, setControlStep] = useState<number>(0);
+  const [parameters, setParameters] = useState<any[]>();
   const context: GlobalVariable = {
     graph: fromReactState<Graph>([graph, setGraph]),
     algorithm: fromReactState<NewGraphAlgorithm>([algorithm, setAlgorithm]),
-    controlStep: fromReactState<number>([controlStep, setControlStep])
+    controlStep: fromReactState<number>([controlStep, setControlStep]),
+    parameters: fromReactState<any[]>([parameters, setParameters])
   };
 
   // TODO: use context

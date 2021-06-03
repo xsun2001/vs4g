@@ -10,6 +10,16 @@ export function parseRangedInt(text: string, lowerbound: number, upperbound: num
   return res;
 }
 
+export function rangedIntParser(lower_bound: number | ((text: string, graph: Graph) => number),
+                                upper_bound: number | ((text: string, graph: Graph) => number))
+  : (text: string, graph: Graph) => number {
+  return (text, graph) => {
+    const lb = typeof lower_bound === "number" ? lower_bound : lower_bound(text, graph);
+    const ub = typeof upper_bound === "number" ? upper_bound : upper_bound(text, graph);
+    return parseRangedInt(text, lb, ub);
+  };
+}
+
 export interface ParameterDescriptor {
   readonly name: string;
   readonly parser: (text: string, graph: Graph) => any;
@@ -61,6 +71,7 @@ export interface NewGraphAlgorithm {
   run: (graph: Graph, ...args: any[]) => Generator<Step>;
   graphInputComponent: JSX.Element;
   graphRenderer: GraphRenderer;
+  parameters: ParameterDescriptor[];
 }
 
 export { GraphAlgorithm, Step };
