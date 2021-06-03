@@ -7,7 +7,7 @@ import { NetworkFormatter } from "@/ui/input-methods/GraphFormatter";
 import { GraphRenderer } from "@/ui/GraphRenderer";
 import CanvasGraphRenderer from "@/ui/CanvasGraphRenderer";
 
-class NewMinCostFlow implements NewGraphAlgorithm {
+export class NewMinCostFlow implements NewGraphAlgorithm {
   category: string = "network flow";
   name: string = "Classic";
   description: string = "classic algorithm for Minimum-Cost Network Flow";

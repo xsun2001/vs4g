@@ -1,7 +1,7 @@
-import { FordFulkerson } from "./FordFulkerson";
-import { EdmondsKarp } from "./EdmondsKarp";
-import { Dinic } from "./Dinic";
-import { EdgeList, Graph } from "../../GraphStructure";
+import { NewFordFulkerson } from "./FordFulkerson";
+import { NewEdmondsKarp } from "./EdmondsKarp";
+import { NewDinic } from "./Dinic";
+import { EdgeList, Graph } from "@/GraphStructure";
 
 //import { G, S, T, Af } from "./data/Large.data";
 
@@ -37,7 +37,7 @@ let T = 5;
 let Af = { flow: 2 };
 
 test("FordFulkerson", () => {
-  let algo = new FordFulkerson().run(G, S, T);
+  let algo = new NewFordFulkerson().run(G, S, T);
   let step: any;
 
   let resG: Graph;
@@ -60,7 +60,7 @@ test("FordFulkerson", () => {
 });
 
 test("EdmondsKarp", () => {
-  let algo = new EdmondsKarp().run(G, S, T);
+  let algo = new NewEdmondsKarp().run(G, S, T);
   let step: any;
 
   let resG: Graph;
@@ -83,7 +83,7 @@ test("EdmondsKarp", () => {
 });
 
 test("Dinic", () => {
-  let algo = new Dinic().run(G, S, T);
+  let algo = new NewDinic().run(G, S, T);
   let step: any;
 
   let resG: Graph;

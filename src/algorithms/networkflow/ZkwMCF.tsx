@@ -7,7 +7,7 @@ import { NetworkFormatter } from "@/ui/input-methods/GraphFormatter";
 import { GraphRenderer } from "@/ui/GraphRenderer";
 import CanvasGraphRenderer from "@/ui/CanvasGraphRenderer";
 
-class NewZkwMCF implements NewGraphAlgorithm {
+export class NewZkwMCF implements NewGraphAlgorithm {
   category: string = "network flow";
   name: string = "Zkw";
   description: string = "Zkw's algorithm for Minimum-Cost Network Flow";

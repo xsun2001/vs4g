@@ -1,6 +1,6 @@
-import { MinCostFlow } from "./MinCostFlow";
-import { ZkwMCF } from "./ZkwMCF";
-import { EdgeList, Graph } from "../../GraphStructure";
+import { NewMinCostFlow } from "./MinCostFlow";
+import { NewZkwMCF } from "./ZkwMCF";
+import { EdgeList, Graph } from "@/GraphStructure";
 
 //import { G, S, T, Afc } from "./data/Large.data";
 
@@ -37,7 +37,7 @@ let L = 1;
 let Afc = { flow: 1, cost: 6 };
 
 test("MinCostFlow", () => {
-  let algo = new MinCostFlow().run(G, S, T, L);
+  let algo = new NewMinCostFlow().run(G, S, T, L);
   let step: any;
 
   let resG: Graph;
@@ -61,7 +61,7 @@ test("MinCostFlow", () => {
 });
 
 test("ZkwMCF", () => {
-  let algo = new ZkwMCF().run(G, S, T, L);
+  let algo = new NewZkwMCF().run(G, S, T, L);
   let step: any;
 
   let resG: Graph;
