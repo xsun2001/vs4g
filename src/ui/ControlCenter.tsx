@@ -1,32 +1,28 @@
 import React, { useContext } from "react";
 import { Segment, Step } from "semantic-ui-react";
-import AlgorithmSelector from "@/ui/AlgorithmSelector";
 import { GraphEditorContext } from "@/GraphEditorContext";
+import AlgorithmSelector from "@/ui/AlgorithmSelector";
 
 const ControlCenter: React.FC = prop => {
     const steps = [
       {
         key: "algorithm",
-        title: "Select Algorithm",
-        component: (<AlgorithmSelector />)
+        title: "Select Algorithm"
       },
       {
         key: "graph",
-        title: "Input Graph",
-        component: (<>2</>)
+        title: "Input Graph"
       },
       {
         key: "parameter",
-        title: "Input Parameter",
-        component: (<>3</>)
+        title: "Input Parameter"
       },
       {
         key: "control",
-        title: "Control Algorithm",
-        component: (<>4</>)
+        title: "Control Algorithm"
       }
     ];
-    const { controlStep } = useContext(GraphEditorContext);
+    const { controlStep, algorithm } = useContext(GraphEditorContext);
     const onStepClicked = (_, { title }) => {
       for (let i = 0; i < steps.length; i++) {
         if (title === steps[i].title) {
@@ -51,13 +47,21 @@ const ControlCenter: React.FC = prop => {
       }
       return stepComponents;
     };
+    const centerComponent = () => {
+      switch (controlStep.value) {
+        case 0:
+          return <AlgorithmSelector />;
+        case 1:
+          return algorithm.value.graphInputComponent;
+      }
+    };
     return (
       <>
         <Step.Group attached="top">
           {renderSteps()}
         </Step.Group>
         <Segment attached>
-          {steps[controlStep.value].component}
+          {centerComponent()}
         </Segment>
       </>
     );

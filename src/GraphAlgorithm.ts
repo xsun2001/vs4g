@@ -1,6 +1,5 @@
 import { Graph } from "./GraphStructure";
 import { EdgeRenderHint, NodeRenderHint } from "@/ui/CanvasGraphRenderer";
-import { GraphInputComponent } from "@/ui/GraphInputComponent";
 import { GraphRenderer } from "@/ui/GraphRenderer";
 
 // check if res = Number(text) is an integer and res \in [lowerbound, upperbound)
@@ -60,7 +59,7 @@ export interface NewGraphAlgorithm {
   name: string;
   description: string;
   run: (graph: Graph, ...args: any[]) => Generator<Step>;
-  graphInputComponent: GraphInputComponent;
+  graphInputComponent: JSX.Element;
   graphRenderer: GraphRenderer;
 }
 

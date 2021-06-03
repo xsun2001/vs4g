@@ -2,7 +2,8 @@ import { GraphAlgorithm, NewGraphAlgorithm, ParameterDescriptor, Step } from "@/
 import CanvasGraphRenderer, { EdgeRenderHint, NodeRenderHint } from "@/ui/CanvasGraphRenderer";
 import { AdjacencyMatrix, Graph } from "@/GraphStructure";
 import { GraphRenderer } from "@/ui/GraphRenderer";
-import { GraphInputComponent } from "@/ui/GraphInputComponent";
+import GraphMatrixInput from "@/ui/input-methods/GraphMatrixInput";
+import { EdgeListFormatter } from "@/ui/input-methods/GraphFormatter";
 
 type NodeState = "relaxing" | "updating" | "updated" | "relaxed" | string;
 const stateColorMap: Map<NodeState, string> = new Map([
@@ -15,7 +16,9 @@ const stateColorMap: Map<NodeState, string> = new Map([
 export class NewDijkstra implements NewGraphAlgorithm {
   category: string = "sssp";
   description: string = "dijkstra";
-  graphInputComponent: GraphInputComponent;
+  graphInputComponent = <GraphMatrixInput checker={g => g}
+                                          description={"Please input a weighted & directed graph"}
+                                          formatters={[new EdgeListFormatter(true, true)]} />;
   graphRenderer: GraphRenderer = new CanvasGraphRenderer(true, "generic",
     {
       node: {
