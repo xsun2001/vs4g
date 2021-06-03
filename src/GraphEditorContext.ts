@@ -14,9 +14,11 @@ export function fromReactState<T>(reactState: [T, (t: T) => void]): State<T> {
 
 export interface GlobalVariable {
   graph: State<Graph>
+  displayGraph: State<Graph>
   algorithm: State<NewGraphAlgorithm>
   controlStep: State<number>
   parameters: State<any[]>
+  currentStep: State<number>
 }
 
 export const GraphEditorContext = createContext<GlobalVariable>(null);

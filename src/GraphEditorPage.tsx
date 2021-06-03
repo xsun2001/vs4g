@@ -16,20 +16,23 @@ const GraphEditor: React.FC = props => {
   let g = fromRandom(10, 15, true, false, false, false);
 
   const [graph, setGraph] = useState<Graph>();
+  const [displayGraph, setDisplayGraph] = useState<Graph>();
   const [algorithm, setAlgorithm] = useState<NewGraphAlgorithm>();
   const [controlStep, setControlStep] = useState<number>(0);
   const [parameters, setParameters] = useState<any[]>();
+  const [currentStep, setCurrentStep] = useState<number>(-1);
   const context: GlobalVariable = {
     graph: fromReactState<Graph>([graph, setGraph]),
+    displayGraph: fromReactState<Graph>([displayGraph, setDisplayGraph]),
     algorithm: fromReactState<NewGraphAlgorithm>([algorithm, setAlgorithm]),
     controlStep: fromReactState<number>([controlStep, setControlStep]),
-    parameters: fromReactState<any[]>([parameters, setParameters])
+    parameters: fromReactState<any[]>([parameters, setParameters]),
+    currentStep: fromReactState<number>([currentStep, setCurrentStep])
   };
 
   // TODO: use context
   const [dataGraph, setDataGraph] = useState<Graph>(cloneDeep(g));
   const [backupGraph, setBackupGraph] = useState<Graph>(cloneDeep(g));
-  const [displayGraph, setDisplayGraph] = useState<Graph>();
   const [renderType, setRenderType] = useState<GraphRenderType>();
   const [generalRenderHint, setGeneralRenderHint] = useState<GeneralRenderHint>();
   const [nodeRenderHint, setNodeRenderHint] = useState<Partial<NodeRenderHint>>();

@@ -1,8 +1,9 @@
 import React, { useContext } from "react";
-import { Header, Segment, Step } from "semantic-ui-react";
+import { Segment, Step } from "semantic-ui-react";
 import { GraphEditorContext } from "@/GraphEditorContext";
 import AlgorithmSelector from "@/ui/AlgorithmSelector";
 import ParameterInput from "@/ui/ParameterInput";
+import AlgorithmPlayer from "@/ui/AlgorithmPlayer";
 
 const ControlCenter: React.FC = prop => {
     const steps = [
@@ -57,7 +58,7 @@ const ControlCenter: React.FC = prop => {
         case 2:
           return <ParameterInput />;
         case 3:
-          return <Header>Step 3</Header>;
+          return <AlgorithmPlayer />;
         default:
           throw new Error();
       }
