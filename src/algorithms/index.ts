@@ -13,10 +13,11 @@ import { NewFord } from "@/algorithms/SSSP/Ford";
 import { SalesmanPath } from "@/algorithms/TravelingSalesmanProblem/TravelingSalesmanProb";
 import { SalesmanCheaperAlgo } from "@/algorithms/TravelingSalesmanProblem/SalesmanCheaperAlgo";
 
-import { HungarianDFS } from "@/algorithms/matching/BipartiteMatching";
-import { KuhnMunkres } from "@/algorithms/matching/WeightedBipartiteMatching";
-import { Gabow } from "@/algorithms/matching/Matching";
-import { DMP } from "@/algorithms/planargraph/DMP";
+import { NewDMP_alpha } from "@/algorithms/planargraph/NewDMP";
+
+import { NewHungarianDFS } from "@/algorithms/matching/BipartiteMatching";
+import { NewKuhnMunkres_alpha } from "@/algorithms/matching/WeightedBipartiteMatching";
+import { NewEdmondsGabow_alpha } from "@/algorithms/matching/Matching";
 
 import { NewFordFulkerson } from "@/algorithms/networkflow/FordFulkerson";
 import { NewEdmondsKarp } from "@/algorithms/networkflow/EdmondsKarp";
@@ -27,8 +28,12 @@ import { NewZkwMCF } from "@/algorithms/networkflow/ZkwMCF";
 const newAlgorithms: NewGraphAlgorithm[] = [
   new NewDijkstra(),
   new NewFord(),
-  new NewEdmondsKarp(),
+  new NewDMP_alpha(),
+  new NewHungarianDFS(),
+  new NewKuhnMunkres_alpha(),
+  new NewEdmondsGabow_alpha(),
   new NewFordFulkerson(),
+  new NewEdmondsKarp(),
   new NewDinic(),
   new NewMinCostFlow(),
   new NewZkwMCF()
@@ -43,11 +48,7 @@ const algorithms = new Map<string, () => GraphAlgorithm>([
   ["Kruskal", () => new Kruskal()],
   ["Prim", () => new Prim()],
   ["SalesmanProblem", () => new SalesmanPath()],
-  ["SalesmanCheaperAlgorithm", () => new SalesmanCheaperAlgo()],
-  ["mbm_hungarian", () => new HungarianDFS()],
-  ["mwbm_km", () => new KuhnMunkres()],
-  ["mm_gabow", () => new Gabow()],
-  ["pt_dmp", () => new DMP()]
+  ["SalesmanCheaperAlgorithm", () => new SalesmanCheaperAlgo()]
 ]);
 
 const newAlgorithm = name => algorithms.get(name)?.();

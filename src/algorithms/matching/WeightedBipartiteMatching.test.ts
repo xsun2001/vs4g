@@ -1,5 +1,5 @@
-import { KuhnMunkres } from "./WeightedBipartiteMatching";
-import { BipartiteMatrix, Graph } from "../../GraphStructure";
+import { NewKuhnMunkres_alpha } from "./WeightedBipartiteMatching";
+import { BipartiteMatrix, Graph } from "@/GraphStructure";
 
 let M = [
   [3, 4, 6, 4, 9],
@@ -12,7 +12,7 @@ let G = new BipartiteMatrix(M);
 let A = { weight: 29 };
 
 test("KuhnMunkres", () => {
-  let algo = new KuhnMunkres().run(G);
+  let algo = new NewKuhnMunkres_alpha().run(G);
   let step: any;
 
   let resG: Graph;

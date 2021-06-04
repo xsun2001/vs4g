@@ -1,36 +1,43 @@
-import { GraphAlgorithm, Step } from "../../GraphAlgorithm";
-import { AdjacencyList, hasMultipleEdges, hasSelfLoop, Edge, Graph, Node, NodeEdgeList } from "../../GraphStructure";
-import { Queue } from "../../utils/DataStructure";
-import { EdgeRenderHint, NodeRenderHint } from "@/ui/CanvasGraphRenderer";
+import { NewGraphAlgorithm, ParameterDescriptor, Step } from "@/GraphAlgorithm";
+import { AdjacencyList, hasMultipleEdges, hasSelfLoop, Edge, Graph, Node, NodeEdgeList } from "@/GraphStructure";
+import { Queue } from "@/utils/DataStructure";
+import CanvasGraphRenderer from "@/ui/CanvasGraphRenderer";
+import GraphMatrixInput from "@/ui/GraphMatrixInput";
+import { EdgeListFormatter } from "@/ui/GraphFormatter";
+import { GraphRenderer } from "@/ui/GraphRenderer";
 
-class Gabow extends GraphAlgorithm {
-  // constructor() {
-  //   super("Gabow", "Gabow algorithm for Maximum Matching in General Graph");
-  // }
+// !!! alpha version !!!
+export class NewEdmondsGabow_alpha implements NewGraphAlgorithm {
+  category: string = "Matching";
+  name: string = "mm_gabow";
+  description: string = "[alpha version] Edmonds-Gabow algorithm for Maximum Matching in General Graph";
 
-  id() {
-    return "mm_gabow";
-  }
-
-  nodeRenderPatcher(): Partial<NodeRenderHint> {
-    return {
+  // TODO: no self loop, no multiple edges
+  graphInputComponent = (
+    <GraphMatrixInput
+      checker={g => g}
+      formatters={[new EdgeListFormatter(false, false)]}
+      description={"Please input a graph without self loop and multiple edges"}
+    />
+  );
+  graphRenderer: GraphRenderer = new CanvasGraphRenderer(false, "bipartite", {
+    node: {
       borderColor: node => (node.datum.label === 0 ? "#333333" : node.datum.label === 1 ? "#77ff77" : "#7777ff"),
       fillingColor: node => (node.datum.label === 0 ? "#cccccc" : "#ffffff"),
       floatingData: node => node.id.toString()
-    };
-  }
-
-  edgeRenderPatcher(): Partial<EdgeRenderHint> {
-    return {
+    },
+    edge: {
       thickness: edge => (edge.datum.matched || edge.datum.marked ? 5 : 3),
       color: edge => {
         if (edge.datum.matched) return "#333333";
         if (edge.datum.marked) return "#ff3333";
         return "#cccccc";
       }
-    };
-  }
+    }
+  });
+  parameters: ParameterDescriptor[] = [];
 
+  // old code
   private n: number = 0;
   private nodes: Node[] = [];
   private edges: Edge[] = [];
@@ -53,7 +60,8 @@ class Gabow extends GraphAlgorithm {
   reverse(buf: any[], l: number = 0, r: number = buf.length) {
     for (let i = l, j = r - 1; i < j; ++i, --j) {
       let tmp = buf[i];
-      (buf[i] = buf[j]), (buf[j] = tmp);
+      buf[i] = buf[j];
+      buf[j] = tmp;
     }
   }
 
@@ -138,12 +146,14 @@ class Gabow extends GraphAlgorithm {
   }
 
   *check(pos: number) {
-    this.clear(this.label, 0), this.clear(this.first);
+    this.clear(this.label, 0);
+    this.clear(this.first);
     this.clear(this.path, []);
     this.que.clear();
 
     this.que.push(pos);
-    (this.path[pos] = [-1]), this.path[pos].push(pos);
+    this.path[pos] = [-1];
+    this.path[pos].push(pos);
     this.label[pos] = 2;
 
     while (!this.que.empty()) {
@@ -159,7 +169,8 @@ class Gabow extends GraphAlgorithm {
             return true;
           }
           let z = this.match[y];
-          (this.label[y] = 1), (this.label[z] = 2);
+          this.label[y] = 1;
+          this.label[z] = 2;
           this.first[z] = y;
           this.que.push(z);
           this.gen1(pos, x, z);
@@ -177,6 +188,7 @@ class Gabow extends GraphAlgorithm {
           }
 
           for (let j = this.first[x]; j !== t; j = this.next(j)) {
+            // noinspection JSSuspiciousNameCombination
             this.gen2(pos, x, y, j);
             this.label[j] = 2;
             this.que.push(j);
@@ -202,18 +214,19 @@ class Gabow extends GraphAlgorithm {
     if (hasSelfLoop(graph)) throw new Error("algo Gabow : self loop");
     this.adjlist = AdjacencyList.from(graph, false);
     if (hasMultipleEdges(this.adjlist)) throw new Error("algo Gabow : mutiple edges");
-    (this.edges = graph.edges()), (this.nodes = graph.nodes()), (this.n = this.nodes.length);
+    this.edges = graph.edges();
+    this.nodes = graph.nodes();
+    this.n = this.nodes.length;
     this.matched = 0;
     yield this.getStep(23); // inited
-    this.clear(this.match), this.clear(this.mark);
+    this.clear(this.match);
+    this.clear(this.mark);
     for (let i = 0; i < this.n; ++i) if (this.match[i] === -1 && (yield* this.check(i))) ++this.matched;
     //console.log(`algo Gabow : {matched: ${res}}`);
     yield this.getStep(28); // return
     return { matched: this.matched };
   }
 }
-
-export { Gabow };
 
 /*
 Reference:

@@ -1,5 +1,5 @@
-import { Gabow } from "./Matching";
-import { EdgeList, Graph } from "../../GraphStructure";
+import { NewEdmondsGabow_alpha } from "./Matching";
+import { EdgeList, Graph } from "@/GraphStructure";
 
 let E = [
   [10, 3],
@@ -25,7 +25,7 @@ let G = new EdgeList(16, E);
 let A = { matched: 8 };
 
 test("Gabow", () => {
-  let algo = new Gabow().run(G);
+  let algo = new NewEdmondsGabow_alpha().run(G);
   let step: any;
 
   let resG: Graph;
