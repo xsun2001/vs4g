@@ -3,8 +3,11 @@ import { NewGraphAlgorithm } from "@/GraphAlgorithm";
 import { newAlgorithms } from "@/algorithms";
 import { Form } from "semantic-ui-react";
 import { GraphEditorContext } from "@/GraphEditorContext";
+import { Spi, SpiContext } from "@/spi";
 
 let AlgorithmSelector: React.FC = props => {
+  const spi = useContext<Spi>(SpiContext);
+  const _ = spi.locale;
   const { algorithm, controlStep, currentStep } = useContext(GraphEditorContext);
   const categories = new Map<string, Map<string, NewGraphAlgorithm>>();
   newAlgorithms.forEach(algo => {
@@ -48,7 +51,7 @@ let AlgorithmSelector: React.FC = props => {
           options={[...(categories.get(selectedCategory) ?? new Map<string, NewGraphAlgorithm>()).keys()].map(key => ({
             key,
             value: key,
-            text: key
+            text: _(`.algo.${key}.name`)
           }))}
           onChange={onChange(setSelectedAlgorithm)}
           defaultValue={selectedAlgorithm}
