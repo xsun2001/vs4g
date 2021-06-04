@@ -1,5 +1,5 @@
-import { Dijkstra } from "./Dijkstra";
-import { AdjacencyMatrix } from "../../GraphStructure";
+import { NewDijkstra } from "./Dijkstra";
+import { AdjacencyMatrix } from "@/GraphStructure";
 
 test("Dijkstra", () => {
   let mat = [
@@ -12,7 +12,7 @@ test("Dijkstra", () => {
   ].map(line => line.map(weight => (weight == 0 ? undefined : { weight: weight })));
   let graph = new AdjacencyMatrix(mat, true);
   let res: number[][] = [];
-  for (let step of new Dijkstra().run(graph, 0)) {
+  for (let step of new NewDijkstra().run(graph, 0)) {
     res.push(step.graph.nodes().map(n => n.datum.dist));
   }
   console.table(res);

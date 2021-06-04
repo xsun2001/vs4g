@@ -8,8 +8,8 @@ import { EulerPath } from "@/algorithms/EulerPath/EulerPath";
 import { HamiltonPath } from "@/algorithms/HamiltonPath/HamiltonPath";
 import { Kruskal } from "@/algorithms/MST/Kruskal";
 import { Prim } from "@/algorithms/MST/Prim";
-import { Dijkstra, NewDijkstra } from "@/algorithms/SSSP/Dijkstra";
-import { Ford } from "@/algorithms/SSSP/Ford";
+import { NewDijkstra } from "@/algorithms/SSSP/Dijkstra";
+import { NewFord } from "@/algorithms/SSSP/Ford";
 import { SalesmanPath } from "@/algorithms/TravelingSalesmanProblem/TravelingSalesmanProb";
 import { SalesmanCheaperAlgo } from "@/algorithms/TravelingSalesmanProblem/SalesmanCheaperAlgo";
 
@@ -26,6 +26,7 @@ import { NewZkwMCF } from "@/algorithms/networkflow/ZkwMCF";
 
 const newAlgorithms: NewGraphAlgorithm[] = [
   new NewDijkstra(),
+  new NewFord(),
   new NewEdmondsKarp(),
   new NewFordFulkerson(),
   new NewDinic(),
@@ -41,8 +42,6 @@ const algorithms = new Map<string, () => GraphAlgorithm>([
   ["HamiltonPath", () => new HamiltonPath()],
   ["Kruskal", () => new Kruskal()],
   ["Prim", () => new Prim()],
-  ["Dijkstra", () => new Dijkstra()],
-  ["Ford", () => new Ford()],
   ["SalesmanProblem", () => new SalesmanPath()],
   ["SalesmanCheaperAlgorithm", () => new SalesmanCheaperAlgo()],
   ["mbm_hungarian", () => new HungarianDFS()],
