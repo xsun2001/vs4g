@@ -1,273 +1,62 @@
 module.exports = {
   mf_ff: {
     pseudo: [
-      "<u>**NOTE**</u>: This Pseudo Code is partially simplified and does NOT strictly correspond to internal implementation.",
-      "**function** <u>FordFulkerson</u> ($\\mathrm{G}$, $s$, $t$):",
-      [
-        "**comment**:",
-        [
-          "Ford-Fulkerson Algorithm for Maximum Flow, **return** maximum *flow* of $\\mathrm{G}$ from $s$ to $t$.",
-          "$\\mathrm{G}=\\left(\\mathrm{V},\\mathrm{E}\\right)$: *network flow graph*;  $\\mathrm{E}\\subset\\left\\{\\left(u,v,c\\right)\\middle|u,v\\in\\mathrm{V}\\right\\}$: *set* of *edge*;  $c$: *capacity* of *edge*;  $s,t\\in\\mathrm{V}$: *source vertex* and *sink vertex*;  $\\mathrm{G}_r=\\left(\\mathrm{V},\\mathrm{E}_r\\right)$: *residual graph* of $\\mathrm{G}$;  $\\mathrm{E}_r\\subset\\left\\{e=\\left(u,v,r_e\\right)\\right\\}$: *set* of *residual edge*, $\\forall \\left(u,v,c\\right)\\in\\mathrm{E}:\\ e=\\left(u,v,r_e\\right),\\bar{e}=(v,u,r_{\\bar{e}})\\in\\mathrm{E}_r,r_e+r_{\\bar{e}}=c$;  $r_e$: *residual capacity*, *capacity* of $e$;  $\\bar{e}$: *reverse edge* of $e$;  *valid edge* $e\\in\\mathrm{E}_r$: $r_e>0$;  *augmenting path*: *path* through ONLY *valid edge*;  $\\mathrm{P}_{st}$: *augmenting path* from $s$ to $t$."
-        ],
-        "**function** <u>dfsFindAugmentingPathFrom</u> ($v$):",
-        [
-          "**comment**:",
-          [
-            "find *augmenting path* using **DFS**, **return** whether $\\exists$ *augmenting path* from $v$ to $t$.",
-            "$v$: current *vertex*."
-          ],
-          "mark $v$ as *visited*.",
-          "**if** $v=t$:  **return** **true**.    **comment**:  found $\\mathrm{P}_{st}.$",
-          "**for each** *valid edge* $\\left(v,u,r_e\\right)\\in\\mathrm{E}_r$:",
-          ["**if** $u$ is not *visited* **and** <u>dfsFindAugmentingPathFrom</u> ($u$):  **return** **true**."],
-          "**return** **false**."
-        ],
-        "**for each** $\\left(u,v,c\\right)\\in\\mathrm{E}$:  $r_e:=c$, $r_{\\bar{e}}:=0$.",
-        "$maxflow:=0$.  $\\color\\red{\\bullet}$",
-        "**while** <u>dfsFindAugmentingPathFrom</u> ($s$):  $\\color\\red{\\bullet}$",
-        [
-          "$\\delta:=$ **minimum** of $r_e$ **for each** $e\\in\\mathrm{P}_{st}$.",
-          "**for each** $e\\in\\mathrm{P}_{st}$:  $r_e:=r_e-\\delta$, $r_{\\bar{e}}:=r_{\\bar{e}}+\\delta$.",
-          "$maxflow:=maxflow+\\delta$.  $\\color\\red{\\bullet}$",
-          "clear *visited* mark **for each** $v\\in\\mathrm{V}$."
-        ],
-        "$\\color\\red{\\bullet}$  **return** $maxflow$."
-      ]
+      "伪代码中用到的一些概念：",
+      "- **残量网络**：节点与原网络流图相同；原图中一条有向边 $e=(u,v)$ 对应着参量网络中 $e_1 = (u,v),e_2=(v,u)$ 两条**残量边**，其中 $e_1$ 的**剩余容量**为 $e$ 的容量减去流量，$e_2$ 的**剩余容量**为 $e$ 的流量。",
+      "- **增广路**：这里定义为残量网络中从源点到汇点的、各残量边剩余容量均 $>0$ 的路径，它也对应着一条原网络流图中的路径（允许原图中的边反向出现在此路径中）。",
+      "`1` （找增广路，DFS）使用DFS在残量网络中寻找增广路，若找到了一条增广路，转步骤`2`；若无法找到，转步骤`4`；",
+      "`2` （计算增广流量）对增广路上所有残量边的剩余容量求最小值，得到能够增广的最大流量 $\\delta$，将$maxflow$ 增大 $\\delta$，转步骤`3`；",
+      "`3` （增广）枚举增广路中每条边，若它正向出现在增广路中则将他的流量减去 $\\delta$，若反向则增加 $\\delta$，转步骤`1`；",
+      "`4` 算法结束。"
     ]
   },
   mf_ek: {
     pseudo: [
       "伪代码中用到的一些概念：",
       "- **残量网络**：节点与原网络流图相同；原图中一条有向边 $e=(u,v)$ 对应着参量网络中 $e_1 = (u,v),e_2=(v,u)$ 两条**残量边**，其中 $e_1$ 的**剩余容量**为 $e$ 的容量减去流量，$e_2$ 的**剩余容量**为 $e$ 的流量。",
-      "- **增广路**：这里定义为残量网络中从源点到汇点的、各残量边剩余容量均 $>0$ 的路径，它也对应着一条原网络流图中的路径（允许原图中的边反向出现在此路径中）",
+      "- **增广路**：这里定义为残量网络中从源点到汇点的、各残量边剩余容量均 $>0$ 的路径，它也对应着一条原网络流图中的路径（允许原图中的边反向出现在此路径中）。",
       "`1` （找增广路）使用BFS在残量网络中寻找增广路，若找到了一条增广路，转步骤`2`；若无法找到，转步骤`4`；",
       "`2` （计算增广流量）对增广路上所有残量边的剩余容量求最小值，得到能够增广的最大流量 $\\delta$，将$maxflow$ 增大 $\\delta$，转步骤`3`；",
       "`3` （增广）枚举增广路中每条边，若它正向出现在增广路中则将他的流量减去 $\\delta$，若反向则增加 $\\delta$，转步骤`1`；",
       "`4` 算法结束。"
-    ],
-    pseudo_en: [
-      "<u>**NOTE**</u>: This Pseudo Code is partially simplified and does NOT strictly correspond to internal implementation.",
-      "**function** <u>EdmondsKarp</u> ($\\mathrm{G}$, $s$, $t$):",
-      [
-        "**comment**:",
-        [
-          "Edmonds-Karp Algorithm for Maximum Flow, **return** maximum *flow* of $\\mathrm{G}$ from $s$ to $t$.",
-          "$\\mathrm{G}=\\left(\\mathrm{V},\\mathrm{E}\\right)$: *network flow graph*;  $\\mathrm{E}\\subset\\left\\{\\left(u,v,c\\right)\\middle|u,v\\in\\mathrm{V}\\right\\}$: *set* of *edge*;  $c$: *capacity* of *edge*;  $s,t\\in\\mathrm{V}$: *source vertex* and *sink vertex*;  $\\mathrm{G}_r=\\left(\\mathrm{V},\\mathrm{E}_r\\right)$: *residual graph* of $\\mathrm{G}$;  $\\mathrm{E}_r\\subset\\left\\{e=\\left(u,v,r_e\\right)\\right\\}$: *set* of *residual edge*, $\\forall \\left(u,v,c\\right)\\in\\mathrm{E}:\\ e=\\left(u,v,r_e\\right),\\bar{e}=(v,u,r_{\\bar{e}})\\in\\mathrm{E}_r,r_e+r_{\\bar{e}}=c$;  $r_e$: *residual capacity*, *capacity* of $e$;  $\\bar{e}$: *reverse edge* of $e$;  *valid edge* $e\\in\\mathrm{E}_r$: $r_e>0$;  *augmenting path*: *path* through ONLY *valid edge*;  $\\mathrm{P}_{st}$: *augmenting path* from $s$ to $t$."
-        ],
-        "**function** <u>bfsFindAugmentingPath</u> ():",
-        [
-          "**comment**:",
-          [
-            "find *augmenting path* using **BFS**, **return** whether $\\exists$ $\\mathrm{P}_{st}$.",
-            "$\\mathrm{Q}$: *queue*."
-          ],
-          "clear $\\mathrm{Q}$, clear *visited* mark **for each** $v\\in\\mathrm{V}$",
-          "mark $s$ as *visited*, push $s$ into $\\mathrm{Q}$.",
-          "**while** $\\mathrm{Q}$ is not *empty*:",
-          [
-            "$v:=$ *front* of $\\mathrm{Q}$, pop $v$ from $\\mathrm{Q}$.",
-            "**if** $v=t$:  **return** **true**.    **comment**:  found $\\mathrm{P}_{st}$",
-            "**for each** *valid edge* $\\left(v,u,r_e\\right)\\in\\mathrm{E}_r$:",
-            ["**if** $u$ is not *visited*:", ["mark $u$ as *visited*, push $u$ into $\\mathrm{Q}$."]]
-          ],
-          "**return** **false**."
-        ],
-        "**for each** $\\left(u,v,c\\right)\\in\\mathrm{E}$:  $r_e:=c$, $r_{\\bar{e}}:=0$.",
-        "$maxflow:=0$.  $\\color\\red{\\bullet}$",
-        "**while** <u>bfsFindAugmentingPath</u> ():  $\\color\\red{\\bullet}$",
-        [
-          "$\\delta:=$ **minimum** of $r_e$ **for each** $e\\in\\mathrm{P}_{st}$.",
-          "**for each** $e\\in\\mathrm{P}_{st}$:  $r_e:=r_e-\\delta$, $r_{\\bar{e}}:=r_{\\bar{e}}+\\delta$.",
-          "$maxflow:=maxflow+\\delta$.  $\\color\\red{\\bullet}$"
-        ],
-        "$\\color\\red{\\bullet}$  **return** $maxflow$."
-      ]
     ]
   },
   mf_dinic: {
     pseudo: [
-      "<u>**NOTE**</u>: This Pseudo Code is partially simplified and does NOT strictly correspond to internal implementation.",
-      "**function** <u>Dinic</u> ($\\mathrm{G}$, $s$, $t$):",
-      [
-        "**comment**:",
-        [
-          "Dinic Algorithm for Maximum Flow, **return** maximum *flow* of $\\mathrm{G}$ from $s$ to $t$.",
-          "$\\mathrm{G}=\\left(\\mathrm{V},\\mathrm{E}\\right)$: *network flow graph*;  $\\mathrm{E}\\subset\\left\\{\\left(u,v,c\\right)\\middle|u,v\\in\\mathrm{V}\\right\\}$: *set* of *edge*;  $c$: *capacity* of *edge*;  $s,t\\in\\mathrm{V}$: *source vertex* and *sink vertex*;  $\\mathrm{G}_r=\\left(\\mathrm{V},\\mathrm{E}_r\\right)$: *residual graph* of $\\mathrm{G}$;  $\\mathrm{E}_r\\subset\\left\\{e=\\left(u,v,r_e\\right)\\right\\}$: *set* of *residual edge*, $\\forall \\left(u,v,c\\right)\\in\\mathrm{E}:\\ e=\\left(u,v,r_e\\right),\\bar{e}=(v,u,r_{\\bar{e}})\\in\\mathrm{E}_r,r_e+r_{\\bar{e}}=c$;  $r_e$: *residual capacity*, *capacity* of $e$;  $\\bar{e}$: *reverse edge* of $e$;  *valid edge*: $e\\in\\mathrm{E}_r,r_e>0$;  *augmenting path*: *path* through ONLY *valid edge*;  $\\mathrm{P}_{st}$: *augmenting path* from $s$ to $t$;  $depth_v$: *minimum distance* of $v\\in\\mathrm{V}$ through *valid edge* from $s$."
-        ],
-        "**function** <u>bfsCalculateDepth</u> ():",
-        [
-          "**comment**:",
-          [
-            "calculate $depth_v$ for all *vertex* using **BFS**, **return** whether $t$ is *reachable* from $t$ in $\\mathrm{G}_l$.",
-            "$\\mathrm{Q}$: *queue*."
-          ],
-          "clear $\\mathrm{Q}$, clear *visited* mark **for each** $v\\in\\mathrm{V}$.",
-          "mark $s$ as *visited*, push $s$ into $\\mathrm{Q}$, $depth_s:=0$.",
-          "**while** $\\mathrm{Q}$ is not *empty*:",
-          [
-            "$v:=$ *front* of $\\mathrm{Q}$, pop $v$ from $\\mathrm{Q}$.",
-            "**if** $v=t$:  **return** **true**.    **comment**:  reached $t$.",
-            "**for each** *valid edge* $e=\\left(v,u,r_e\\right)\\in\\mathrm{E}_r$:",
-            [
-              "**if** $u$ is not *visited*:",
-              ["mark $u$ as *visited*, push $u$ into $\\mathrm{Q}$, $depth_u:=depth_v+1$."]
-            ]
-          ],
-          "**return** **false**."
-        ],
-        "**function** <u>dfsAugment</u> ($v$, $limit$):",
-        [
-          "**comment**:",
-          [
-            "augment in $\\mathrm{G}_r$ using **DFS**, **return** *flow* augmented.",
-            "$v$: current *vertex*;  $limit$: *upperbound* of *flow* to be augmented."
-          ],
-          "**if** $v=t$:  $\\color\\red{\\bullet}$  **return** $limit$.    **comment**:  reach $t$, augment by $limit$.",
-          "$\\sigma:=0$.",
-          "**for each** *unchecked valid edge* $e=\\left(v,u,r_e\\right)\\in\\mathrm{E}_r$:",
-          [
-            "**if** $depth_u=depth_v+1$:    **comment**:  $e$ is in *level graph* of $\\mathrm{G}_r$ with respect to $depth_\\mathrm{V}$.",
-            [
-              "$\\delta:=$ <u>dfsAugment</u> ($u$, **minimum** of $limit$ and $r_e$).",
-              "$r_e:=r_e-\\delta$, $r_{\\bar{e}}:=r_{\\bar{e}}+\\delta$.",
-              "$limit:=limit-\\delta$, $\\sigma:=\\sigma+\\delta$.",
-              "**if** $limit=0$:  **return** $\\sigma$;",
-              "mark $e$ as *checked*."
-            ]
-          ],
-          "**return** $\\sigma$."
-        ],
-        "**for each** $\\left(u,v,c\\right)\\in\\mathrm{E}$:  $r_e:=c$, $r_{\\bar{e}}:=0$.",
-        "$maxflow:=0$.  $\\color\\red{\\bullet}$",
-        "**while** <u>bfsCalculateDepth</u> ():  $\\color\\red{\\bullet}$",
-        [
-          "**for each** $e\\in\\mathrm{E}_r$:  mark $e$ as *unchecked*.",
-          "$\\delta:=$ <u>dfsAugment</u> ($s$, $+\\infty$).",
-          "$maxflow:=maxflow+\\delta$.  $\\color\\red{\\bullet}$"
-        ],
-        "$\\color\\red{\\bullet}$  **return** $maxflow$."
-      ]
+      "伪代码中用到的一些概念：",
+      "- **残量网络**：节点与原网络流图相同；原图中一条有向边 $e=(u,v)$ 对应着参量网络中 $e_1 = (u,v),e_2=(v,u)$ 两条**残量边**，其中 $e_1$ 的**剩余容量**为 $e$ 的容量减去流量，$e_2$ 的**剩余容量**为 $e$ 的流量。",
+      "- **增广路**：这里定义为残量网络中从源点到汇点的、各残量边剩余容量均 $>0$ 的路径，它也对应着一条原网络流图中的路径（允许原图中的边反向出现在此路径中）。",
+      "- **分层图**：由节点**深度**诱导的一个残量网络的子图，其边集为所有①剩余容量 $>0$ 且②从深度为 $d(\\neq -1)$ 的节点指向深度为 $d+1$ 的节点的边。",
+      "`1` （构建分层图，BFS）使用BFS，从**汇点**出发，只**反向**经过剩余容量 $>0$ 的残量边，求出各节点到汇点的深度（规定无法到达的节点深度为 $-1$），若源点的深度 $\\neq -1$（图中存在增广路），转步骤`2`；否则（图中无增广路），转步骤`5`；",
+      "`2` （找增广路，DFS）使用DFS在**分层图**中寻找增广路，若找到增广路，转步骤`3`；若找不到（当前分层图中已无增广路），转步骤`4`；（在DFS的回溯过程中修改边的流量，变化量为当前分层图中经过这条边的所有增广路的增广流量之和，正负由边在增广路中的正反方向决定）",
+      "`3` （累加增广流量）对增广路上所有残量边的剩余容量求最小值，累加到当前分层图的增广流量 $\\delta$ 中，转步骤`2`；",
+      "`4` （累加最大流）将 $maxflow$ 增大 $\\delta$，将 $\\delta$ 重置为 $0$，转步骤`1`；",
+      "`5` 算法结束。"
     ]
   },
   mcf_classic: {
     pseudo: [
-      "<u>**NOTE**</u>: This Pseudo Code is partially simplified and does NOT strictly correspond to internal implementation.",
-      "**function** <u>ClassicMCF</u> ($\\mathrm{G}$, $s$, $t$, $flowlimit$):",
-      [
-        "**comment**:",
-        [
-          "Classic Algorithm for Minimum-Cost maximum Flow, **return** maximum *flow* ($\\leq flowlimit$) of $\\mathrm{G}$ from $s$ to $t$ and its minimum *cost*.",
-          "$\\mathrm{G}=\\left(\\mathrm{V},\\mathrm{E}\\right)$: *weighted network flow graph*;  $\\mathrm{E}\\subset\\left\\{\\left(u,v,c_a,c_o\\right)\\middle|u,v\\in\\mathrm{V}\\right\\}$: *set* of *edge*;  $c_a$: *capacity* of *edge*;  $c_o$: *cost* of *edge*;  $s,t\\in\\mathrm{V}$: *source vertex* and *sink vertex*;  $flowlimit$: *upperbound* of maximum *flow*;  $\\mathrm{G}_r=\\left(\\mathrm{V},\\mathrm{E}_r\\right)$: *residual graph* of $\\mathrm{G}$;  $\\mathrm{E}_r\\subset\\left\\{e=\\left(u,v,r_e,c_e\\right)\\right\\}$: *set* of *residual edge*, $\\forall \\left(u,v,c_a,c_o\\right)\\in\\mathrm{E}:\\ e=\\left(u,v,r_e,c_o\\right),\\bar{e}=(v,u,r_{\\bar{e}},-c_o)\\in\\mathrm{E}_r,r_e+r_{\\bar{e}}=c$;  $r_e$: *residual capacity*, *capacity* of $e$;  $\\bar{e}$: *reverse edge* of $e$;  *valid edge* $e\\in\\mathrm{E}_r$: $r_e>0$;  *augmenting path*: *minimum-cost path* through ONLY *valid edge*;  $\\mathrm{P}_{st}$: *augmenting path* from $s$ to $t$;  $dis_v$: minimum *cost* from $s$ to $v$."
-        ],
-        "**function** <u>spfaFindAugmentingPath</u> ():",
-        [
-          "**comment**:",
-          [
-            "find *minimum-cost* *augmenting path* using **SPFA**, **return** whether $\\exists$ $\\mathrm{P}_{st}$.",
-            "$\\mathrm{Q}$: *queue*."
-          ],
-          "clear $\\mathrm{Q}$.",
-          "**for each** $v\\in\\mathrm{V}$:  $dis_v:=+\\infty$.",
-          "$dis_s:=0$, push $s$ into $\\mathrm{Q}$, mark $s$ as *inqueue*.",
-          "**while** $\\mathrm{Q}$ is not *empty*:",
-          [
-            "$v:=$ *front* of $\\mathrm{Q}$, pop $v$ from $\\mathrm{Q}$, clear *inqueue* mark of $v$.",
-            "**for each** *valid edge* $\\left(v,u,r_e,c_e\\right)\\in\\mathrm{E}_r$:",
-            [
-              "**if** $dis_u>dis_v+c_e$:",
-              [
-                "$dis_u:=dis_v+c_e$.",
-                "**if** $u$ is not *inqueue*:",
-                ["push $u$ into $\\mathrm{Q}$, mark $u$ as *inqueue*."]
-              ]
-            ]
-          ],
-          "**return** whether $dis_t\\neq+\\infty$.    **comment**:  $dis_t\\neq+\\infty\\Leftrightarrow$ $t$ is *reachable* through *valid edge* from $s\\Leftrightarrow\\exists\\ \\mathrm{P}_{st}$."
-        ],
-        "**for each** $\\left(u,v,c_a,c_o\\right)\\in\\mathrm{E}$:  $r_e:=c_a$, $r_{\\bar{e}}:=0$, $c_e:=c_o$, $c_{\\bar{e}}:=-c_o$.",
-        "$maxflow:=0$, $mincost:=0$  $\\color\\red{\\bullet}$",
-        "**while** <u>spfaFindAugmentingPath</u> ():  $\\color\\red{\\bullet}$",
-        [
-          "$\\delta:=$ **minimum** of $flowlimit$ and $r_e$ **for each** $e\\in\\mathrm{P}_{st}$.",
-          "**for each** $e\\in\\mathrm{P}_{st}$:  $r_e:=r_e-\\delta$, $r_{\\bar{e}}:=r_{\\bar{e}}+\\delta$.",
-          "$flowlimit:=flowlimit-\\delta$.",
-          "$maxflow:=maxflow+\\delta$, $mincost:=mincost+\\delta\\cdot dis_t$  $\\color\\red{\\bullet}$"
-        ],
-        "$\\color\\red{\\bullet}$  **return** $maxflow$, $mincost$."
-      ]
+      "伪代码中用到的一些概念：",
+      "- **残量网络**：节点与原网络流图相同；原图中一条有向边 $e=(u,v)$ 对应着参量网络中 $e_1 = (u,v),e_2=(v,u)$ 两条**残量边**，其中 $e_1$ 的**剩余容量**为 $e$ 的容量减去流量，费用为 $e$ 的费用；$e_2$ 的**剩余容量**为 $e$ 的流量，费用为 $e$ 费用的相反数。",
+      "- **最小费用图**：残量网络中把费用当作边权，只考虑剩余容量 $>0$ 的残量边的**最短路图**。",
+      "- **增广路**：这里定义为残量网络中从源点到汇点的、各残量边剩余容量均 $>0$ 的**最小费用**路径，它也对应着一条原网络流图中的路径（允许原图中的边反向出现在此路径中）。",
+      "`1` （构建最小费用图，SPFA）使用SPFA，在残量网络中，从源点出发，把费用当作边权，只经过剩余容量 $>0$ 的残量边，求出源点到各节点到汇点的最短距离（规定无法到达的节点深度为 $\\infty$），若源点到汇点的最短距离 $d_{st}< \\infty$，任取一条增广路，转步骤`2`；否则（图中无增广路），转步骤`4`；",
+      "`2` （计算增广流量）对增广路上所有残量边的剩余容量求最小值，再对流量限制取最小值后得到能够增广的最大流量 $\\delta$，将$maxflow$ 增大 $\\delta$，将 $mincost$ 增大 $\\delta\\times d_{st}$，将流量限制减小 $\\delta$，转步骤`3`；",
+      "`3` （增广）枚举增广路中每条边，若它正向出现在增广路中则将他的流量减去 $\\delta$，若反向则增加 $\\delta$，转步骤`1`；",
+      "`4` 算法结束。"
     ]
   },
   mcf_zkw: {
     pseudo: [
-      "<u>**NOTE**</u>: This Pseudo Code is partially simplified and does NOT strictly correspond to internal implementation.",
-      "**function** <u>ZkwMCF</u> ($\\mathrm{G}$, $s$, $t$):",
-      [
-        "**comment**:",
-        [
-          "Zkw's Algorithm for Minimum-Cost maximum Flow, **return** maximum *flow* ($\\leq flowlimit$) of $\\mathrm{G}$ from $s$ to $t$ and its minimum *cost*.",
-          "$\\mathrm{G}=\\left(\\mathrm{V},\\mathrm{E}\\right)$: *weighted network flow graph*;  $\\mathrm{E}\\subset\\left\\{\\left(u,v,c_a,c_o\\right)\\middle|u,v\\in\\mathrm{V}\\right\\}$: *set* of *edge*;  $c_a$: *capacity* of *edge*;  $c_o$: *cost* of *edge*;  $s,t\\in\\mathrm{V}$: *source vertex* and *sink vertex*;  $flowlimit$: *upperbound* of maximum *flow*;  $\\mathrm{G}_r=\\left(\\mathrm{V},\\mathrm{E}_r\\right)$: *residual graph* of $\\mathrm{G}$;  $\\mathrm{E}_r\\subset\\left\\{e=\\left(u,v,r_e,c_e\\right)\\right\\}$: *set* of *residual edge*, $\\forall \\left(u,v,c_a,c_o\\right)\\in\\mathrm{E}:\\ e=\\left(u,v,r_e,c_o\\right),\\bar{e}=(v,u,r_{\\bar{e}},-c_o)\\in\\mathrm{E}_r,r_e+r_{\\bar{e}}=c$;  $r_e$: *residual capacity*, *capacity* of $e$;  $\\bar{e}$: *reverse edge* of $e$;  *valid edge* $e\\in\\mathrm{E}_r$: $r_e>0$;  *augmenting path*: *minimum-cost path* through ONLY *valid edge*;  $\\mathrm{P}_{st}$: *augmenting path* from $s$ to $t$;  $dis_v$: minimum *cost* from $s$ to $v$."
-        ],
-        "**function** <u>spfaFindAugmentingPath</u> ():",
-        [
-          "**comment**:",
-          [
-            "find *minimum-cost* *augmenting path* using **SPFA**, **return** whether $\\exists$ $\\mathrm{P}_{st}$.",
-            "$\\mathrm{Q}$: *queue*."
-          ],
-          "clear $\\mathrm{Q}$.",
-          "**for each** $v\\in\\mathrm{V}$:  $dis_v:=+\\infty$.",
-          "$dis_s:=0$, push $s$ into $\\mathrm{Q}$, mark $s$ as *inqueue*.",
-          "**while** $\\mathrm{Q}$ is not *empty*:",
-          [
-            "$v:=$ *front* of $\\mathrm{Q}$, pop $v$ from $\\mathrm{Q}$, clear *inqueue* mark of $v$.",
-            "**for each** *valid edge* $\\left(v,u,r_e,c_e\\right)\\in\\mathrm{E}_r$:",
-            [
-              "**if** $dis_u>dis_v+c_e$:",
-              [
-                "$dis_u:=dis_v+c_e$.",
-                "**if** $u$ is not *inqueue*:",
-                ["push $u$ into $\\mathrm{Q}$, mark $u$ as *inqueue*."]
-              ]
-            ]
-          ],
-          "**return** whether $dis_t\\neq+\\infty$.    **comment**:  $dis_t\\neq+\\infty\\Leftrightarrow$ $t$ is *reachable* through *valid edge* from $s\\Leftrightarrow\\exists\\ \\mathrm{P}_{st}$."
-        ],
-        "**function** <u>dfsAugment</u> ($v$, $limit$):",
-        [
-          "**comment**:",
-          [
-            "augment in $\\mathrm{G}_r$ using **DFS**, **return** *flow* augmented.",
-            "$v$: current *vertex*;  $limit$: *upperbound* of *flow* to be augmented."
-          ],
-          "**if** $v=t$:  $\\color\\red{\\bullet}$  **return** $limit$.    **comment**:  reach $t$, augment by $limit$.",
-          "mark $v$ as *visited*, $\\sigma:=0$.",
-          "**for each** *valid edge* $e=\\left(v,u,r_e,c_e\\right)\\in\\mathrm{E}_r$:",
-          [
-            "**if** $u$ is not *visited* **and** $dis_u=dis_v+c_e$:    **comment**:  $e$ is in *SSSP graph* of $\\mathrm{G}_r$.",
-            [
-              "$\\delta:=$ <u>dfsAugment</u> ($u$, **minimum** of $limit$ and $r_e$).",
-              "$r_e:=r_e-\\delta$, $r_{\\bar{e}}:=r_{\\bar{e}}+\\delta$.",
-              "$limit:=limit-\\delta$, $\\sigma:=\\sigma+\\delta$.",
-              "**if** $limit=0$:  **return** $\\sigma$;"
-            ]
-          ],
-          "**return** $\\sigma$."
-        ],
-        "**for each** $\\left(u,v,c_a,c_o\\right)\\in\\mathrm{E}$:  $r_e:=c_a$, $r_{\\bar{e}}:=0$, $c_e:=c_o$, $c_{\\bar{e}}:=-c_o$.",
-        "$maxflow:=0$, $mincost:=0$  $\\color\\red{\\bullet}$",
-        "**while** <u>spfaFindAugmentingPath</u> ():  $\\color\\red{\\bullet}$",
-        [
-          "**do**:",
-          [
-            "clear *visited* mark **for each** $v\\in\\mathrm{V}$.",
-            "$\\delta:=$ <u>dfsAugment</u> ($s$, $flowlimit$).",
-            "$flowlimit:=flowlimit-\\delta$.",
-            "$maxflow:=maxflow+\\delta$, $mincost:=mincost+\\delta\\cdot dis_t$  $\\color\\red{\\bullet}$"
-          ],
-          "**while** $\\delta>0$."
-        ],
-        "$\\color\\red{\\bullet}$  **return** $maxflow$, $mincost$."
-      ]
+      "伪代码中用到的一些概念：",
+      "- **残量网络**：节点与原网络流图相同；原图中一条有向边 $e=(u,v)$ 对应着参量网络中 $e_1 = (u,v),e_2=(v,u)$ 两条**残量边**，其中 $e_1$ 的**剩余容量**为 $e$ 的容量减去流量，$e_2$ 的**剩余容量**为 $e$ 的流量。",
+      "- **最小费用图**：残量网络中把费用当作边权，只考虑剩余容量 $>0$ 的残量边的**最短路图**。",
+      "- **增广路**：这里定义为残量网络中从源点到汇点的、各残量边剩余容量均 $>0$ 的路径，它也对应着一条原网络流图中的路径（允许原图中的边反向出现在此路径中）。",
+      "`1` （构建最小费用图，SPFA）使用SPFA，在残量网络中，从**汇点**出发，把费用当作边权，只**反向**经过剩余容量 $>0$ 的残量边，求出汇点到各节点到汇点的最短距离（规定无法到达的节点深度为 $\\infty$），若汇点到源点的最短距离 $d_{ts}< \\infty$，转步骤`2`；否则（图中无增广路），转步骤`5`；",
+      "`2` （找增广路，DFS）使用DFS在**最小费用图**中寻找增广路，若找到增广路，转步骤`3`；若找不到（当前最小费用图中已无增广路），转步骤`4`；（在DFS的回溯过程中修改边的流量，变化量为当前分层图中经过这条边的所有增广路的增广流量之和，正负由边在增广路中的正反方向决定）",
+      "`3` （累加增广流量）对增广路上所有残量边的剩余容量和当前流量限制求最小值，在流量限制中减去，累加到当前最小费用图的增广流量 $\\delta$ 中，转步骤`2`；",
+      "`4` （累加最大流）将 $maxflow$ 增大 $\\delta$，将 $mincost$ 增大 $\\delta\\times d_{ts}$，将 $\\delta$ 重置为 $0$，转步骤`1`；",
+      "`5` 算法结束。"
     ]
   },
   mbm_hungarian: {
