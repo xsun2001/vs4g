@@ -20,7 +20,7 @@ export class NewEdmondsGabow_alpha implements NewGraphAlgorithm {
       description={"Please input a graph without self loop and multiple edges"}
     />
   );
-  graphRenderer: GraphRenderer = new CanvasGraphRenderer(false, "bipartite", {
+  graphRenderer: GraphRenderer = new CanvasGraphRenderer(false, "generic", {
     node: {
       borderColor: node => (node.datum.label === 0 ? "#333333" : node.datum.label === 1 ? "#77ff77" : "#7777ff"),
       fillingColor: node => (node.datum.label === 0 ? "#cccccc" : "#ffffff"),
