@@ -6,7 +6,6 @@ import AlgorithmControl from "@/ui/AlgorithmControl";
 import { newAlgorithm } from "@/algorithms";
 import cloneDeep from "lodash.clonedeep";
 import { EdgeRenderHint, GeneralRenderHint, GraphRenderType, NodeRenderHint } from "@/ui/CanvasGraphRenderer";
-import { Header, Segment } from "semantic-ui-react";
 import AlgorithmSteps from "@/ui/AlgorithmSteps";
 import ControlCenter from "@/ui/ControlCenter";
 import { fromReactState, GlobalVariable, GraphEditorContext } from "@/GraphEditorContext";
@@ -89,9 +88,9 @@ const GraphEditor: React.FC = props => {
       onAlgorithmChanged={onAlgorithmChanged}
     />
   );
-  const algorithmSteps = () => (
-    <AlgorithmSteps algorithmName={algorithmName} codeType={codeType} codePosition={codePosition} />
-  );
+  // const algorithmSteps = () => (
+  //   <AlgorithmSteps algorithmName={algorithmName} codeType={codeType} codePosition={codePosition} />
+  // );
 
   // return isNarrowScreen ? (
   //   <>
@@ -113,15 +112,7 @@ const GraphEditor: React.FC = props => {
   return <GraphEditorContext.Provider value={context}>
     <MainCanvas />
     <ControlCenter />
-    <div style={{
-      position: "absolute",
-      width: "100%",
-      bottom: "0px",
-      padding: "20px"
-    }}>
-
-      <Segment><Header>Hello</Header></Segment>
-    </div>
+    <AlgorithmSteps />
   </GraphEditorContext.Provider>;
 };
 

@@ -14,8 +14,9 @@ const stateColorMap: Map<NodeState, string> = new Map([
 ]);
 
 export class NewDijkstra implements NewGraphAlgorithm {
-  category: string = "sssp";
-  description: string = "dijkstra";
+  category: string = "SSSP";
+  name: string = "Dijkstra";
+  description: string = "Dijkstra";
   graphInputComponent = <GraphMatrixInput checker={g => g}
                                           description={"Please input a weighted & directed graph"}
                                           formatters={[new EdgeListFormatter(true, true)]} />;
@@ -39,7 +40,6 @@ export class NewDijkstra implements NewGraphAlgorithm {
         floatingData: edge => edge.datum.dist
       }
     });
-  name: string = "dijkstra";
   parameters: ParameterDescriptor[] = [
     {
       name: "start_point",

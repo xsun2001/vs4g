@@ -1,19 +1,14 @@
-import { Accordion, Comment } from "semantic-ui-react";
+import { Accordion, Comment, Header, Segment } from "semantic-ui-react";
 import React, { useContext, useState } from "react";
 import style from "./AlgorithmSteps.module.less";
 import { Spi, SpiContext } from "@/spi";
 import { codeMap } from "@/algorithms";
+import { GraphEditorContext } from "@/GraphEditorContext";
 
-interface AlgorithmStepsProps {
-  algorithmName: string;
-  codeType: string;
-  codePosition: number;
-}
-
-const AlgorithmSteps: React.FC<AlgorithmStepsProps> = props => {
+const AlgorithmSteps: React.FC = props => {
   const spi = useContext<Spi>(SpiContext);
   const _ = spi.locale;
-  const { algorithmName, codeType, codePosition } = props;
+  const { algorithm, currentStep } = useContext(GraphEditorContext);
   const [active, setActive] = useState<boolean>(false);
 
   const onAccordionClick = () => setActive(!active);
@@ -24,6 +19,7 @@ const AlgorithmSteps: React.FC<AlgorithmStepsProps> = props => {
   ) => {
     let ans: JSX.Element[] = [];
     let selected: string;
+    let codePosition = currentStep.value;
     for (let line of element) {
       if (typeof line === "string") {
         ans.push(
@@ -45,32 +41,48 @@ const AlgorithmSteps: React.FC<AlgorithmStepsProps> = props => {
       }
     }
     return [ans, idx, selected];
-  }, [codePosition, spi]);
+  }, [currentStep.value, spi]);
 
   const rendered: [JSX.Element[], number, string] = React.useMemo(() => {
-    if (algorithmName && codeType)
-      return renderCodeLines(codeMap[algorithmName][codeType]);
+    if (algorithm.value)
+      return renderCodeLines(codeMap[algorithm.value.name]["pseudo"]);
     else
       return [null, 0, null];
-  }, [algorithmName, codeType, renderCodeLines]);
+  }, [algorithm.value, renderCodeLines]);
 
   return (
-    <Accordion styled>
-      <Accordion.Title
-        active={active}
-        onClick={onAccordionClick}
-      >
-        {active ? "Code Display" :
-          rendered[2] == null ? "Please select algorithm" :
-            (<spi.Markdown content={rendered[2]} />)
-        }
-      </Accordion.Title>
-      <Accordion.Content
-        active={active}
-      >
-        {rendered[0]}
-      </Accordion.Content>
-    </Accordion>
+    <div style={{
+      position: "absolute",
+      width: "100%",
+      bottom: "0px",
+      padding: "20px"
+    }}>
+      {(algorithm.value == null || currentStep.value < 0) ? (
+        <Segment>
+          <Header>
+            Waiting for algorithm start
+          </Header>
+        </Segment>
+      ) : (
+        <Accordion fluid styled>
+          <Accordion.Title
+            active={active}
+            onClick={onAccordionClick}
+            className={style.title}
+          >
+            {active ? "Code Display" :
+              rendered[2] == null ? "Please select algorithm" :
+                (<spi.Markdown content={rendered[2]} />)
+            }
+          </Accordion.Title>
+          <Accordion.Content
+            active={active}
+          >
+            {rendered[0]}
+          </Accordion.Content>
+        </Accordion>
+      )}
+    </div>
   );
 };
 
