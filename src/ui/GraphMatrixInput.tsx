@@ -4,7 +4,7 @@ import { Spi, SpiContext } from "@/spi";
 import { GraphInputComponent } from "@/ui/GraphInputComponent";
 import { Graph } from "@/GraphStructure";
 import { GraphEditorContext } from "@/GraphEditorContext";
-import { GraphFormatter } from "@/ui/input-methods/GraphFormatter";
+import { GraphFormatter } from "@/ui/GraphFormatter";
 
 export interface GraphMatrixInputProps {
   formatters: GraphFormatter[];

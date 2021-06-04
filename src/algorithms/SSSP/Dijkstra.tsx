@@ -2,8 +2,8 @@ import { GraphAlgorithm, NewGraphAlgorithm, ParameterDescriptor, rangedIntParser
 import CanvasGraphRenderer, { EdgeRenderHint, NodeRenderHint } from "@/ui/CanvasGraphRenderer";
 import { AdjacencyMatrix, Graph } from "@/GraphStructure";
 import { GraphRenderer } from "@/ui/GraphRenderer";
-import GraphMatrixInput from "@/ui/input-methods/GraphMatrixInput";
-import { EdgeListFormatter } from "@/ui/input-methods/GraphFormatter";
+import GraphMatrixInput from "@/ui/GraphMatrixInput";
+import { EdgeListFormatter } from "@/ui/GraphFormatter";
 
 type NodeState = "relaxing" | "updating" | "updated" | "relaxed" | string;
 const stateColorMap: Map<NodeState, string> = new Map([
