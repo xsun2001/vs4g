@@ -2,8 +2,6 @@ import { NewMinCostFlow } from "./MinCostFlow";
 import { NewZkwMCF } from "./ZkwMCF";
 import { EdgeList, Graph } from "@/GraphStructure";
 
-//import { G, S, T, Afc } from "./data/Large.data";
-
 // let E = [
 //   [0,1,2,0],
 //   [0,2,2,0],

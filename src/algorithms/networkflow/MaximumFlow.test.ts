@@ -3,8 +3,6 @@ import { NewEdmondsKarp } from "./EdmondsKarp";
 import { NewDinic } from "./Dinic";
 import { EdgeList, Graph } from "@/GraphStructure";
 
-//import { G, S, T, Af } from "./data/Large.data";
-
 // let E = [
 //   [0,1,3],
 //   [0,3,4],
