@@ -6,7 +6,7 @@ import { Spi, SpiContext } from "@/spi";
 const ParameterInput: React.FC = props => {
   const spi = useContext<Spi>(SpiContext);
   const _ = spi.locale;
-  const { graph, algorithm, controlStep, parameters, currentStep } = useContext(GraphEditorContext);
+  const { graph, algorithm, controlStep, parameters } = useContext(GraphEditorContext);
   const descriptors = algorithm.value.parameters;
   const [inputs, setInputs] = useState<string[]>(new Array<string>(descriptors.length));
   const [errors, setErrors] = useState<string[]>(new Array<string>(descriptors.length));
@@ -30,7 +30,6 @@ const ParameterInput: React.FC = props => {
     setErrors(newErrors);
     if (ok) {
       parameters.set(para);
-      currentStep.set(-1);
       controlStep.set(3);
     }
   };

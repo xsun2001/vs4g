@@ -14,7 +14,7 @@ export interface GraphMatrixInputProps {
 
 const GraphMatrixInput: GraphInputComponent<GraphMatrixInputProps> = props => {
   const { formatters, description, checker } = props;
-  const { graph, controlStep, currentStep } = useContext(GraphEditorContext);
+  const { graph, controlStep } = useContext(GraphEditorContext);
   const spi = useContext<Spi>(SpiContext);
   const _ = spi.locale;
 
@@ -43,7 +43,6 @@ const GraphMatrixInput: GraphInputComponent<GraphMatrixInputProps> = props => {
         );
       let res = checker(formatters[formatter].fromMatrix(mat));
       graph.set(res);
-      currentStep.set(-1);
       controlStep.set(2);
     } catch (e) {
       setError(e.message);

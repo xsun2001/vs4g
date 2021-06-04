@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import reportWebVitals from "./reportWebVitals";
 import "semantic-ui-css/semantic.css";
 import GraphEditor from "@/GraphEditorPage";
+import "./main.css"
 
 ReactDOM.render(
   <React.StrictMode>

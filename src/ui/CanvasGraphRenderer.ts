@@ -61,18 +61,18 @@ interface RenderHints {
 const cssProp = (key: string) => getComputedStyle(document.body).getPropertyValue(key);
 const defaultRenderHints: RenderHints = {
   general: {
-    nodeRadius: 15,
+    nodeRadius: 20,
     textColor: "#000000",
     backgroundColor: "#FFFFFF",
-    simulationForceManyBodyStrength: -1000
+    simulationForceManyBodyStrength: -500
   },
   edge: {
-    thickness: () => 3,
+    thickness: () => 4,
     color: () => "#585858",
     floatingData: edge => String(edge.datum?.weight ?? "")
   },
   node: {
-    borderThickness: () => 3,
+    borderThickness: () => 2,
     borderColor: () => "#343434",
     fillingColor: () => "#FFFFFF",
     floatingData: node => String(node.id),
@@ -123,7 +123,7 @@ class CanvasGraphRenderer implements GraphRenderer {
       this.edges = edges;
       this.simulation = d3
         .forceSimulation(this.nodes)
-        .force("link", d3.forceLink(this.edges).distance(edge => edge.graphEdge.datum.weight || 30)) // default id implement may work
+        .force("link", d3.forceLink(this.edges).distance(edge => 100)) // default id implement may work
         .force("charge", d3.forceManyBody().strength(this.hint("general", "simulationForceManyBodyStrength")))
         .force("box", this.boxConstraint());
       if (this.renderType === "generic") {
@@ -131,7 +131,27 @@ class CanvasGraphRenderer implements GraphRenderer {
       } else if (this.renderType === "bipartite") {
         this.simulation.force("bipartite", this.bipartiteConstraint());
       }
-      this.simulation.on("tick", () => this.render());
+      const drag = d3
+        .drag<HTMLCanvasElement, SimulationNodeDatum | undefined>()
+        .subject(event => this.simulation.find(event.x, event.y))
+        .on("start", event => {
+          if (!event.active) this.simulation.alphaTarget(0.3).restart();
+          if (this.renderType === "generic") event.subject.fx = event.subject.x;
+          event.subject.fy = event.subject.y;
+        })
+        .on("drag", event => {
+          if (this.renderType === "generic") event.subject.fx = this.xInRange(event.x);
+          event.subject.fy = this.yInRange(event.y);
+        })
+        .on("end", event => {
+          if (!event.active) this.simulation.alphaTarget(0);
+          if (this.renderType === "generic") event.subject.fx = null;
+          event.subject.fy = null;
+        });
+      d3.select<HTMLCanvasElement, any>(this.canvas).call(drag);
+      this.simulation
+        .on("tick", () => this.render())
+        .restart();
     } else {
       // fix position of nodes and copy edges
       this.simulation.stop();
@@ -142,7 +162,7 @@ class CanvasGraphRenderer implements GraphRenderer {
       // should we deep copy?
       this.edges = edges;
       // reset link force
-      this.simulation.force("link", d3.forceLink(this.edges).distance(edge => edge.graphEdge.datum.weight || 30));
+      this.simulation.force("link", d3.forceLink(this.edges).distance(edge => 100));
       // restart behaviour?
       this.simulation.restart();
     }
@@ -153,24 +173,6 @@ class CanvasGraphRenderer implements GraphRenderer {
     this.canvas = canvas;
     let width = this.canvas.clientWidth, height = this.canvas.clientHeight;
     this.size = { width, height };
-    const drag = d3
-      .drag<HTMLCanvasElement, SimulationNodeDatum | undefined>()
-      .subject(event => this.simulation.find(event.x, event.y))
-      .on("start", event => {
-        if (!event.active) this.simulation.alphaTarget(0.3).restart();
-        if (this.renderType === "generic") event.subject.fx = event.subject.x;
-        event.subject.fy = event.subject.y;
-      })
-      .on("drag", event => {
-        if (this.renderType === "generic") event.subject.fx = this.xInRange(event.x);
-        event.subject.fy = this.yInRange(event.y);
-      })
-      .on("end", event => {
-        if (!event.active) this.simulation.alphaTarget(0);
-        if (this.renderType === "generic") event.subject.fx = null;
-        event.subject.fy = null;
-      });
-    d3.select<HTMLCanvasElement, any>(this.canvas).call(drag);
   }
 
   private static makeInRange(n: number, a: number, b: number): number {
@@ -276,7 +278,7 @@ class CanvasGraphRenderer implements GraphRenderer {
   }
 
   renderNode(ctx: CanvasRenderingContext2D, node: D3SimulationNode) {
-    ctx.font = "20px monospace";
+    ctx.font = "18px monospace";
     const nodeRadius = this.hint("general", "nodeRadius");
     const { x, y, graphNode } = node;
 
@@ -299,9 +301,11 @@ class CanvasGraphRenderer implements GraphRenderer {
   }
 
   finish(): void {
-    this.simulation.stop();
-    d3.select(this.canvas).on(".drag", null);
-    this.simulation = null;
+    if (this.simulation) {
+      this.simulation.stop();
+      d3.select(this.canvas).on(".drag", null);
+      this.simulation = null;
+    }
   }
 }
 

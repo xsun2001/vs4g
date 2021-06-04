@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import GraphDisplay from "./ui/GraphDisplay";
 import GraphInputPanel from "./ui/GraphInputPanel";
 import { fromRandom, Graph } from "@/GraphStructure";
@@ -6,7 +6,7 @@ import AlgorithmControl from "@/ui/AlgorithmControl";
 import { newAlgorithm } from "@/algorithms";
 import cloneDeep from "lodash.clonedeep";
 import { EdgeRenderHint, GeneralRenderHint, GraphRenderType, NodeRenderHint } from "@/ui/CanvasGraphRenderer";
-import { Container } from "semantic-ui-react";
+import { Header, Segment } from "semantic-ui-react";
 import AlgorithmSteps from "@/ui/AlgorithmSteps";
 import ControlCenter from "@/ui/ControlCenter";
 import { fromReactState, GlobalVariable, GraphEditorContext } from "@/GraphEditorContext";
@@ -111,10 +111,17 @@ const GraphEditor: React.FC = props => {
   //   </Grid>
   // );
   return <GraphEditorContext.Provider value={context}>
-    <Container>
-      <MainCanvas />
-      <ControlCenter />
-    </Container>
+    <MainCanvas />
+    <ControlCenter />
+    <div style={{
+      position: "absolute",
+      width: "100%",
+      bottom: "0px",
+      padding: "20px"
+    }}>
+
+      <Segment><Header>Hello</Header></Segment>
+    </div>
   </GraphEditorContext.Provider>;
 };
 

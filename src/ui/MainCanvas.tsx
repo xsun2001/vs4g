@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef } from "react";
 import { GraphEditorContext } from "@/GraphEditorContext";
 
 const MainCanvas: React.FC = props => {
-  const { graph, displayGraph, algorithm } = useContext(GraphEditorContext);
+  const { graph, displayGraph, algorithm, controlStep } = useContext(GraphEditorContext);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -18,7 +18,7 @@ const MainCanvas: React.FC = props => {
         algorithm.value.graphRenderer.updateGraph(graph.value);
       }
     }
-  }, [algorithm.value, displayGraph.value, graph.value]);
+  }, [displayGraph.value, graph.value]);
   useEffect(() => {
     const canvas = canvasRef.current;
     if (canvas.height !== canvas.clientHeight) {
@@ -27,20 +27,21 @@ const MainCanvas: React.FC = props => {
     if (canvas.width !== canvas.clientWidth) {
       canvas.width = canvas.clientWidth;
     }
-    if (algorithm.value) {
-      algorithm.value.graphRenderer.bindCanvas(canvas);
-    }
   });
+  useEffect(() => {
+    if (algorithm.value && controlStep.value !== 3) {
+      algorithm.value.graphRenderer.finish();
+    }
+  }, [controlStep.value]);
 
   return (
     <canvas style={{
       position: "absolute",
       width: "100%",
       height: "100%",
-      zIndex: -1,
       margin: 0,
       padding: 0
-    }} ref={canvasRef} />
+    }} ref={canvasRef} draggable={true} />
   );
 };
 

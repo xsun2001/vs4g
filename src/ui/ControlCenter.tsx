@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Segment, Step } from "semantic-ui-react";
 import { GraphEditorContext } from "@/GraphEditorContext";
 import AlgorithmSelector from "@/ui/AlgorithmSelector";
@@ -24,7 +24,13 @@ const ControlCenter: React.FC = prop => {
         title: "Control Algorithm"
       }
     ];
-    const { controlStep, algorithm } = useContext(GraphEditorContext);
+    const { controlStep, algorithm, displayGraph, currentStep } = useContext(GraphEditorContext);
+    useEffect(() => {
+      if (controlStep.value !== 3) {
+        displayGraph.set(null);
+        currentStep.set(-1);
+      }
+    }, [controlStep.value]);
     const onStepClicked = (_, { title }) => {
       for (let i = 0; i < steps.length; i++) {
         if (title === steps[i].title) {
@@ -64,14 +70,20 @@ const ControlCenter: React.FC = prop => {
       }
     };
     return (
-      <>
+      <div style={{
+        position: "absolute",
+        width: "100%",
+        // maxWidth: "800px",
+        top: "0px",
+        padding: "20px"
+      }}>
         <Step.Group attached="top">
           {renderSteps()}
         </Step.Group>
         <Segment attached>
           {centerComponent()}
         </Segment>
-      </>
+      </div>
     );
   }
 ;

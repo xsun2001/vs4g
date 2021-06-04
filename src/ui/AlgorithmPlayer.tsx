@@ -86,7 +86,6 @@ const AlgorithmPlayer: React.FC = props => {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          height: "100%",
           fontSize: "20px"
         }}>
           {"No." + (1 + currentStep.value) + " Step"}
