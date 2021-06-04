@@ -3,12 +3,12 @@ import { Graph, Node, NodeEdgeList } from "@/GraphStructure";
 import { NetworkFlowBase, _Edge, v, c, cm, noSelfLoop } from "./Common";
 import CanvasGraphRenderer from "@/ui/CanvasGraphRenderer";
 import { GraphRenderer } from "@/ui/GraphRenderer";
-import GraphMatrixInput from "@/ui/input-methods/GraphMatrixInput";
-import { NetworkFormatter } from "@/ui/input-methods/GraphFormatter";
+import GraphMatrixInput from "@/ui/GraphMatrixInput";
+import { NetworkFormatter } from "@/ui/GraphFormatter";
 
 export class NewFordFulkerson implements NewGraphAlgorithm {
   category: string = "network flow";
-  name: string = "Ford-Fulkerson";
+  name: string = "mf_ff";
   description: string = "Ford-Fulkerson algorithm for Maximum Network Flow";
 
   graphInputComponent = (

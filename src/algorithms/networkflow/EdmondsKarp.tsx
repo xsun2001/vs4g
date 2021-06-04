@@ -4,12 +4,12 @@ import { Queue } from "@/utils/DataStructure";
 import { NetworkFlowBase, _Edge, v, cm, c, noSelfLoop } from "./Common";
 import CanvasGraphRenderer from "@/ui/CanvasGraphRenderer";
 import { GraphRenderer } from "@/ui/GraphRenderer";
-import GraphMatrixInput from "@/ui/input-methods/GraphMatrixInput";
-import { NetworkFormatter } from "@/ui/input-methods/GraphFormatter";
+import GraphMatrixInput from "@/ui/GraphMatrixInput";
+import { NetworkFormatter } from "@/ui/GraphFormatter";
 
 export class NewEdmondsKarp implements NewGraphAlgorithm {
   category: string = "network flow";
-  name: string = "Edmonds-Karp";
+  name: string = "mf_ek";
   description: string = "Edmonds-Karp algorithm for Maximum Network Flow";
 
   graphInputComponent = (

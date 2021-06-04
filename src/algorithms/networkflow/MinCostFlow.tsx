@@ -2,14 +2,14 @@ import { NewGraphAlgorithm, ParameterDescriptor, parseRangedInt, Step } from "@/
 import { Edge, Graph, Node, NodeEdgeList } from "@/GraphStructure";
 import { Queue } from "@/utils/DataStructure";
 import { NetworkFlowBase, _Edge, v, iv, noSelfLoop, cm, c } from "./Common";
-import GraphMatrixInput from "@/ui/input-methods/GraphMatrixInput";
-import { NetworkFormatter } from "@/ui/input-methods/GraphFormatter";
+import GraphMatrixInput from "@/ui/GraphMatrixInput";
+import { NetworkFormatter } from "@/ui/GraphFormatter";
 import { GraphRenderer } from "@/ui/GraphRenderer";
 import CanvasGraphRenderer from "@/ui/CanvasGraphRenderer";
 
 export class NewMinCostFlow implements NewGraphAlgorithm {
   category: string = "network flow";
-  name: string = "Classic";
+  name: string = "mcf_classic";
   description: string = "classic algorithm for Minimum-Cost Network Flow";
 
   graphInputComponent = (
