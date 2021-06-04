@@ -3,9 +3,10 @@ const {
   addLessLoader,
   addWebpackAlias,
   addWebpackModuleRule,
-  addWebpackPlugin,
+  addWebpackPlugin
 } = require("customize-cra");
 const CssUrlRelativePlugin = require("css-url-relative-plugin");
+const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 
 const addWebWorkerLoader = loaderOptions => config => {
   const mergedLoaderOptions = Object.assign({}, loaderOptions);
@@ -143,9 +144,10 @@ module.exports = override(
   }),
   addWebpackAlias({
     "@": __dirname + "/src",
-    "semantic-ui-css": "fomantic-ui-css",
+    "semantic-ui-css": "fomantic-ui-css"
   }),
   addWebpackPlugin(new CssUrlRelativePlugin()),
+  addWebpackPlugin(new MonacoWebpackPlugin()),
   removeServiceWorker(),
   useRelativePath(),
   fixChunkSplitting(),

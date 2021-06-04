@@ -13,8 +13,10 @@ const stateColorMap: Map<NodeState, string> = new Map([
   ["relaxed", "#fff0f5"]
 ]);
 
-export class Dijkstra implements NewGraphAlgorithm {
+
+export class NewDijkstra implements NewGraphAlgorithm {
   category: string = "SSSP";
+  name: string = "Dijkstra";
   description: string = "Dijkstra";
   graphInputComponent = <GraphMatrixInput checker={g => g}
                                           description={"Please input a weighted & directed graph"}
@@ -39,11 +41,10 @@ export class Dijkstra implements NewGraphAlgorithm {
         floatingData: edge => edge.datum.dist
       }
     });
-  name: string = "Dijkstra";
   parameters: ParameterDescriptor[] = [
     {
       name: "start_point",
-      parser: rangedIntParser(lower_bound: 0, upper_bound: (_ : string, graph: Graph) => graph.nodes().length)
+      parser: rangedIntParser(0, (_, graph) => graph.nodes().length)
     }
   ];
 
@@ -124,5 +125,4 @@ export class Dijkstra implements NewGraphAlgorithm {
       codePosition: new Map<string, number>([["pseudo", 4]])
     };
   }
-
 }

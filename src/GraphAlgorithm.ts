@@ -1,5 +1,6 @@
 import { Graph } from "./GraphStructure";
 import { EdgeRenderHint, NodeRenderHint } from "@/ui/CanvasGraphRenderer";
+import { GraphRenderer } from "@/ui/GraphRenderer";
 
 // check if res = Number(text) is an integer and res \in [lowerbound, upperbound)
 export function parseRangedInt(text: string, lowerbound: number, upperbound: number): number {
@@ -7,6 +8,16 @@ export function parseRangedInt(text: string, lowerbound: number, upperbound: num
   if (res !== parseInt(text) || isNaN(res)) throw new Error(".input.error.not_an_integer");
   if (res < lowerbound || res >= upperbound) throw new Error(".input.error.out_of_range");
   return res;
+}
+
+export function rangedIntParser(lower_bound: number | ((text: string, graph: Graph) => number),
+                                upper_bound: number | ((text: string, graph: Graph) => number))
+  : (text: string, graph: Graph) => number {
+  return (text, graph) => {
+    const lb = typeof lower_bound === "number" ? lower_bound : lower_bound(text, graph);
+    const ub = typeof upper_bound === "number" ? upper_bound : upper_bound(text, graph);
+    return parseRangedInt(text, lb, ub);
+  };
 }
 
 export interface ParameterDescriptor {
@@ -26,7 +37,8 @@ class Step {
     public readonly graph: Graph,
     public readonly codePosition?: Map<string, number>,
     public readonly extraData?: [string, string, any][]
-  ) {}
+  ) {
+  }
 }
 
 abstract class GraphAlgorithm {
@@ -50,6 +62,16 @@ abstract class GraphAlgorithm {
   abstract nodeRenderPatcher(): Partial<NodeRenderHint>;
 
   abstract edgeRenderPatcher(): Partial<EdgeRenderHint>;
+}
+
+export interface NewGraphAlgorithm {
+  category: string;
+  name: string;
+  description: string;
+  run: (graph: Graph, ...args: any[]) => Generator<Step>;
+  graphInputComponent: JSX.Element;
+  graphRenderer: GraphRenderer;
+  parameters: ParameterDescriptor[];
 }
 
 export { GraphAlgorithm, Step };

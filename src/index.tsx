@@ -1,12 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import GraphEditorPage from "@/GraphEditorPage";
 import reportWebVitals from "./reportWebVitals";
-import "semantic-ui-css/semantic.css"
+import "semantic-ui-css/semantic.css";
+import GraphEditor from "@/GraphEditorPage";
+import "./main.css"
 
 ReactDOM.render(
   <React.StrictMode>
-    <GraphEditorPage />
+    <GraphEditor />
   </React.StrictMode>,
   document.getElementById("root")
 );
