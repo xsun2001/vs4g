@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import GraphDisplay from "./ui/GraphDisplay";
 import GraphInputPanel from "./ui/GraphInputPanel";
 import { fromRandom, Graph } from "@/GraphStructure";
@@ -11,6 +11,7 @@ import AlgorithmSteps from "@/ui/AlgorithmSteps";
 import ControlCenter from "@/ui/ControlCenter";
 import { fromReactState, GlobalVariable, GraphEditorContext } from "@/GraphEditorContext";
 import { NewGraphAlgorithm } from "@/GraphAlgorithm";
+import MainCanvas from "@/ui/MainCanvas";
 
 const GraphEditor: React.FC = props => {
   let g = fromRandom(10, 15, true, false, false, false);
@@ -111,6 +112,7 @@ const GraphEditor: React.FC = props => {
   // );
   return <GraphEditorContext.Provider value={context}>
     <Container>
+      <MainCanvas />
       <ControlCenter />
     </Container>
   </GraphEditorContext.Provider>;

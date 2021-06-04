@@ -2,16 +2,20 @@ import React, { useCallback, useContext, useEffect, useMemo, useState } from "re
 import { Button, Grid } from "semantic-ui-react";
 import { GraphEditorContext } from "@/GraphEditorContext";
 import { Step } from "@/GraphAlgorithm";
+import cloneDeep from "lodash.clonedeep";
 
 const AlgorithmPlayer: React.FC = props => {
 
   const { graph, displayGraph, algorithm, currentStep, parameters } = useContext(GraphEditorContext);
-  const generator = useMemo(() => algorithm.value.run(graph.value, ...parameters.value), [algorithm.value, graph.value, parameters.value]);
+  const generator = useMemo(() => algorithm.value.run(cloneDeep(graph.value), ...parameters.value), [algorithm.value, graph.value, parameters.value]);
   const [steps, setSteps] = useState<Step[]>([]);
   const [autorunTimer, setAutorunTimer] = useState<number>();
   const [autorunCounter, setAutorunCounter] = useState<number>(0);
 
   const autorunTask = useCallback(() => {
+    if (autorunTimer == null) {
+      return;
+    }
     const newStep = currentStep.value + 1;
     if (newStep === steps.length) {
       let nxt = generator.next();
@@ -20,7 +24,7 @@ const AlgorithmPlayer: React.FC = props => {
         window.clearInterval(autorunTimer);
         return;
       }
-      steps.push(nxt.value);
+      steps.push(cloneDeep(nxt.value));
       setSteps(Array.from(steps));
     }
     displayGraph.set(steps[newStep].graph);
@@ -53,7 +57,7 @@ const AlgorithmPlayer: React.FC = props => {
       if (nxt.done) {
         return;
       }
-      steps.push(nxt.value);
+      steps.push(cloneDeep(nxt.value));
       setSteps(Array.from(steps));
     }
     displayGraph.set(steps[currentStep.value + 1].graph);
@@ -61,7 +65,7 @@ const AlgorithmPlayer: React.FC = props => {
   };
   const restart = () => {
     stopAutorun();
-    displayGraph.set(graph.value);
+    displayGraph.set(null);
     currentStep.set(-1);
   };
 

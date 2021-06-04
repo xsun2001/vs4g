@@ -2,11 +2,10 @@ import { Graph } from "@/GraphStructure";
 
 /* Invoke Order:
  * 1. Constructor
- * 2. updateGraph(initialGraph)
- * 3. bindCanvas
- * 4. updateGraph
- * 5. more update...
- * 6. finish
+ * 2. Bind Canvas
+ * 3. Update Graph
+ * 5. More Update...
+ * 6. Finish
  */
 
 export interface GraphRenderer {

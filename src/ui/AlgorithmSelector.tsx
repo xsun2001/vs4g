@@ -5,7 +5,7 @@ import { Form } from "semantic-ui-react";
 import { GraphEditorContext } from "@/GraphEditorContext";
 
 let AlgorithmSelector: React.FC = props => {
-  const { algorithm, controlStep } = useContext(GraphEditorContext);
+  const { algorithm, controlStep, currentStep } = useContext(GraphEditorContext);
   const categories = new Map<string, Map<string, NewGraphAlgorithm>>();
   newAlgorithms.forEach(algo => {
     const cat = algo.category;
@@ -22,6 +22,7 @@ let AlgorithmSelector: React.FC = props => {
     = func => ((_, { value }) => func(value));
   const onConfirm = () => {
     algorithm.set(categories.get(selectedCategory).get(selectedAlgorithm));
+    currentStep.set(-1);
     controlStep.set(1);
   };
 
