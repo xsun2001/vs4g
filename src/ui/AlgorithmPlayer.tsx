@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useState } from "react";
+import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { Button, Grid } from "semantic-ui-react";
 import { GraphEditorContext } from "@/GraphEditorContext";
 import { Step } from "@/GraphAlgorithm";
@@ -9,20 +9,27 @@ const AlgorithmPlayer: React.FC = props => {
   const generator = useMemo(() => algorithm.value.run(graph.value, ...parameters.value), [algorithm.value, graph.value, parameters.value]);
   const [steps, setSteps] = useState<Step[]>([]);
   const [autorunTimer, setAutorunTimer] = useState<number>();
+  const [autorunCounter, setAutorunCounter] = useState<number>(0);
 
+  const autorunTask = useCallback(() => {
+    const newStep = currentStep.value + 1;
+    if (newStep === steps.length) {
+      let nxt = generator.next();
+      if (nxt.done) {
+        setAutorunCounter(0);
+        window.clearInterval(autorunTimer);
+        return;
+      }
+      steps.push(nxt.value);
+      setSteps(Array.from(steps));
+    }
+    displayGraph.set(steps[newStep].graph);
+    currentStep.set(newStep);
+  }, [autorunTimer, currentStep, displayGraph, generator, steps]);
+  useEffect(() => autorunTask(), [autorunCounter]);
   const startAutorun = () => {
     const timer = window.setInterval(() => {
-      if (currentStep.value === steps.length - 1) {
-        let nxt = generator.next();
-        if (nxt.done) {
-          window.clearInterval(timer);
-          return;
-        }
-        steps.push(nxt.value);
-        setSteps(Array.from(steps));
-      }
-      displayGraph.set(steps[currentStep.value + 1].graph);
-      currentStep.set(currentStep.value + 1);
+      setAutorunCounter(prev => prev + 1);
     }, 500);
     setAutorunTimer(timer);
   };
@@ -71,7 +78,15 @@ const AlgorithmPlayer: React.FC = props => {
         <Button fluid icon="left chevron" labelPosition="left" content="Previous" onClick={previousStep} />
       </Grid.Column>
       <Grid.Column>
-        <p>{"No." + (1 + currentStep.value) + " Step"}</p>
+        <div style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100%",
+          fontSize: "20px"
+        }}>
+          {"No." + (1 + currentStep.value) + " Step"}
+        </div>
       </Grid.Column>
       <Grid.Column>
         <Button fluid icon="right chevron" labelPosition="right" content="Next" onClick={nextStep} />
