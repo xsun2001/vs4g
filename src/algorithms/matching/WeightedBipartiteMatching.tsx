@@ -23,7 +23,7 @@ export class NewKuhnMunkres_alpha implements NewGraphAlgorithm {
       description={"Please input a weighted bipartite graph using n*n matrix"}
     />
   );
-  graphRenderer: GraphRenderer = new CanvasGraphRenderer(false, "generic", {
+  graphRenderer: GraphRenderer = new CanvasGraphRenderer(false, "bipartite", {
     node: {
       borderColor: node => (node.datum.side === "left" ? undefined : node.datum.label === 1 ? "#77ff77" : "#7777ff"),
       fillingColor: node => (node.datum.in ? "#cccccc" : "#ffffff"),
