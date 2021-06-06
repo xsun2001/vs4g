@@ -197,6 +197,8 @@ export class AdjListFormatter implements GraphFormatter {
   fromMatrix(mat: number[][]): Graph {
     return new AdjacencyList(
       mat.map(line => {
+        if (line.length === 0) throw new Error(".input.error.invalid_format");
+        line.pop();
         if (this.weighted) {
           let m = line.length;
           let res: [number, any][] = [];
@@ -217,9 +219,9 @@ export class AdjListFormatter implements GraphFormatter {
           res.push(t);
           res.push(d.weight);
         });
-        return res;
+        return res.concat([-1]);
       }
-      return line.map(([t, _]) => t);
+      return line.map(([t, _]) => t).concat([-1]);
     });
   }
 }
