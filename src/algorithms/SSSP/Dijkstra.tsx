@@ -3,7 +3,14 @@ import CanvasGraphRenderer from "@/ui/CanvasGraphRenderer";
 import { AdjacencyMatrix, Graph } from "@/GraphStructure";
 import { GraphRenderer } from "@/ui/GraphRenderer";
 import GraphMatrixInput from "@/ui/GraphMatrixInput";
-import { EdgeListFormatter } from "@/ui/GraphFormatter";
+import {
+  AdjListFormatter,
+  AdjMatrixFormatter,
+  EdgeListFormatter,
+  ForwardListFormatter,
+  IncMatrixFormatter,
+  TextbookEdgeListFormatter
+} from "@/ui/GraphFormatter";
 
 type NodeState = "relaxing" | "updating" | "updated" | "relaxed" | string;
 const stateColorMap: Map<NodeState, string> = new Map([
@@ -17,29 +24,38 @@ export class Dijkstra implements NewGraphAlgorithm {
   category: string = "SSSP";
   name: string = "Dijkstra";
   description: string = "Dijkstra";
-  graphInputComponent = <GraphMatrixInput checker={g => g}
-                                          description={"Please input a weighted & directed graph"}
-                                          formatters={[new EdgeListFormatter(true, true)]} />;
-  graphRenderer: GraphRenderer = new CanvasGraphRenderer(true, "generic",
-    {
-      node: {
-        fillingColor: node => stateColorMap.get(node.datum.state),
-        floatingData: node => {
-          let distStr = "?",
-            dist = node.datum.dist;
-          if (dist === Infinity) {
-            distStr = "∞";
-          } else if (dist != null) {
-            distStr = String(dist);
-          }
-          return `(${node.id},${distStr})`;
+  graphInputComponent = (
+    <GraphMatrixInput
+      checker={g => g}
+      description={"Please input a weighted & directed graph"}
+      formatters={[
+        new EdgeListFormatter(true, true),
+        new AdjMatrixFormatter(true, true),
+        new TextbookEdgeListFormatter(true, true),
+        new ForwardListFormatter(true, true),
+        new AdjListFormatter(true, true)
+      ]}
+    />
+  );
+  graphRenderer: GraphRenderer = new CanvasGraphRenderer(true, "generic", {
+    node: {
+      fillingColor: node => stateColorMap.get(node.datum.state),
+      floatingData: node => {
+        let distStr = "?",
+          dist = node.datum.dist;
+        if (dist === Infinity) {
+          distStr = "∞";
+        } else if (dist != null) {
+          distStr = String(dist);
         }
-      },
-      edge: {
-        color: edge => (edge.datum.visited ? "#db70db" : undefined),
-        floatingData: edge => edge.datum.dist
+        return `(${node.id},${distStr})`;
       }
-    });
+    },
+    edge: {
+      color: edge => (edge.datum.visited ? "#db70db" : undefined),
+      floatingData: edge => edge.datum.dist
+    }
+  });
   parameters: ParameterDescriptor[] = [
     {
       name: "start_point",
@@ -47,7 +63,7 @@ export class Dijkstra implements NewGraphAlgorithm {
     }
   ];
 
-  * run(graph: Graph, startPoint: number): Generator<Step> {
+  *run(graph: Graph, startPoint: number): Generator<Step> {
     let mat = AdjacencyMatrix.from(graph, true).mat.map(line => line.map(datum => (datum ? datum.weight || 1 : 0)));
     const getState = (id: number) => graph.nodes()[id].datum.state as NodeState;
     const setState = (id: number, state: NodeState = "") => (graph.nodes()[id].datum.state = state);
