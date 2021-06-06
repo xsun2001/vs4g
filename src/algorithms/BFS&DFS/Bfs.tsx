@@ -1,10 +1,23 @@
-import { GraphAlgorithm, Step, ParameterDescriptor } from "../../GraphAlgorithm";
-import { EdgeRenderHint, NodeRenderHint } from "../../ui/CanvasGraphRenderer";
-import { AdjacencyMatrix, Graph } from "../../GraphStructure";
+import { NewGraphAlgorithm, ParameterDescriptor, rangedIntParser, Step } from "@/GraphAlgorithm";
+import CanvasGraphRenderer from "@/ui/CanvasGraphRenderer";
+import { AdjacencyMatrix, Graph } from "@/GraphStructure";
+import { GraphRenderer } from "@/ui/GraphRenderer";
+import GraphMatrixInput from "@/ui/GraphMatrixInput";
+import { EdgeListFormatter } from "@/ui/GraphFormatter";
 
-class BfsFindPath extends GraphAlgorithm {
-  nodeRenderPatcher(): Partial<NodeRenderHint> {
-    return {
+export class Bfs implements NewGraphAlgorithm {
+  category: string = "BFS&DFS";
+  name: string = "Bfs";
+  description: string = "Bfs";
+  graphInputComponent = (
+    <GraphMatrixInput
+      checker={g => g}
+      description={"Please input an unweighted & directed graph"}
+      formatters={[new EdgeListFormatter(false, true)]}
+    />
+  );
+  graphRenderer: GraphRenderer = new CanvasGraphRenderer(true, "generic", {
+    node: {
       fillingColor: node => {
         if (node.datum.visited == 1) {
           return "#87ceeb";
@@ -18,33 +31,18 @@ class BfsFindPath extends GraphAlgorithm {
       },
       floatingData: node =>
         node.datum.dist == -1 || node.datum.dist == undefined ? `(${node.id},?)` : `(${node.id},${node.datum.dist})`
-    };
-  }
-
-  edgeRenderPatcher(): Partial<EdgeRenderHint> {
-    return {
+    },
+    edge: {
       color: undefined,
       floatingData: undefined
-    };
-  }
-
-  id() {
-    return "BFS";
-  }
-
-  parameters(): ParameterDescriptor[] {
-    return [
-      {
-        name: "start_point",
-        parser: (text, graph) => {
-          let x = parseInt(text);
-          if (isNaN(x)) throw new Error(".input.error.nan");
-          if (x < 0 || x > graph.nodes().length) throw new Error(".input.error.out_of_range");
-          return x;
-        }
-      }
-    ];
-  }
+    }
+  });
+  parameters: ParameterDescriptor[] = [
+    {
+      name: "start_point",
+      parser: rangedIntParser(0, (_: string, graph: Graph) => graph.nodes().length)
+    }
+  ];
 
   *run(graph: Graph, start_point: number): Generator<Step> {
     graph = AdjacencyMatrix.from(graph, true);
@@ -90,5 +88,3 @@ class BfsFindPath extends GraphAlgorithm {
     };
   }
 }
-
-export { BfsFindPath };

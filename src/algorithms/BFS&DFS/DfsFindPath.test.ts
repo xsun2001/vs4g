@@ -1,4 +1,4 @@
-import { DfsFindPath } from "./DfsFindPath";
+import { Dfs } from "./Dfs";
 import { AdjacencyMatrix } from "../../GraphStructure";
 
 test("DfsFindPath", () => {
@@ -11,7 +11,7 @@ test("DfsFindPath", () => {
   ].map(line => line.map(e => (e === 1 ? {} : undefined)));
   let graph = new AdjacencyMatrix(mat, true);
   let res = [];
-  for (let step of new DfsFindPath().run(graph, 0)) {
+  for (let step of new Dfs().run(graph, 0)) {
     res.push(step.graph.nodes().map(n => n.datum.sequence + ", " + n.datum.visited));
   }
   console.table(res);

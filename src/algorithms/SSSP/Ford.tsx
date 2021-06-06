@@ -1,12 +1,13 @@
 import { NewGraphAlgorithm, ParameterDescriptor, rangedIntParser, Step } from "@/GraphAlgorithm";
 import CanvasGraphRenderer from "@/ui/CanvasGraphRenderer";
-import { AdjacencyMatrix, Graph } from "@/GraphStructure";
+import { Graph } from "@/GraphStructure";
 import { GraphRenderer } from "@/ui/GraphRenderer";
 import GraphMatrixInput from "@/ui/GraphMatrixInput";
 import { EdgeListFormatter } from "@/ui/GraphFormatter";
 
 export class Ford implements NewGraphAlgorithm {
   category: string = "SSSP";
+  name: string = "Ford";
   description: string = "Ford";
   graphInputComponent = (
     <GraphMatrixInput
@@ -26,7 +27,6 @@ export class Ford implements NewGraphAlgorithm {
       floatingData: edge => edge.datum.weight
     }
   });
-  name: string = "Ford";
   parameters: ParameterDescriptor[] = [
     {
       name: "start_point",
@@ -35,7 +35,6 @@ export class Ford implements NewGraphAlgorithm {
   ];
 
   *run(graph: Graph, startPoint: number): Generator<Step> {
-    let mat = AdjacencyMatrix.from(graph, true).mat;
     graph.nodes().forEach(n => ((n.datum.dist = Infinity), (n.datum.visited = false)));
     graph.edges().forEach(e => (e.datum.chosen = false));
     graph.nodes()[startPoint].datum.dist = 0;

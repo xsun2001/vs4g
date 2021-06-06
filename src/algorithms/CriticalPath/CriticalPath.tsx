@@ -1,10 +1,23 @@
-import { GraphAlgorithm, Step, ParameterDescriptor } from "../../GraphAlgorithm";
-import { EdgeRenderHint, NodeRenderHint } from "../../ui/CanvasGraphRenderer";
-import { AdjacencyMatrix, Graph } from "../../GraphStructure";
+import { NewGraphAlgorithm, ParameterDescriptor, Step } from "@/GraphAlgorithm";
+import CanvasGraphRenderer from "@/ui/CanvasGraphRenderer";
+import { AdjacencyMatrix, Graph } from "@/GraphStructure";
+import { GraphRenderer } from "@/ui/GraphRenderer";
+import GraphMatrixInput from "@/ui/GraphMatrixInput";
+import { EdgeListFormatter } from "@/ui/GraphFormatter";
 
-class CriticalPath extends GraphAlgorithm {
-  nodeRenderPatcher(): Partial<NodeRenderHint> {
-    return {
+export class CriticalPath implements NewGraphAlgorithm {
+  category: string = "CriticalPath";
+  name: string = "CriticalPath";
+  description: string = "CriticalPath";
+  graphInputComponent = (
+    <GraphMatrixInput
+      checker={g => g}
+      description={"Please input an weighted & directed graph, and please ensure that the graph is a DAG"}
+      formatters={[new EdgeListFormatter(true, true)]}
+    />
+  );
+  graphRenderer: GraphRenderer = new CanvasGraphRenderer(true, "generic", {
+    node: {
       fillingColor: node => {
         if (node.datum.visited == 1) {
           return "#87ceeb";
@@ -24,23 +37,13 @@ class CriticalPath extends GraphAlgorithm {
           return `(${node.id},${node.datum.topoSequence},${node.datum.dist})`;
         }
       }
-    };
-  }
-
-  edgeRenderPatcher(): Partial<EdgeRenderHint> {
-    return {
+    },
+    edge: {
       color: edge => (edge.datum.visited == true ? "#db70db" : undefined),
       floatingData: edge => edge.datum.weight
-    };
-  }
-
-  id() {
-    return "CriticalPath";
-  }
-
-  parameters(): ParameterDescriptor[] {
-    return [];
-  }
+    }
+  });
+  parameters: ParameterDescriptor[] = [];
 
   *run(graph: Graph): Generator<Step> {
     graph = AdjacencyMatrix.from(graph, true);
@@ -134,5 +137,3 @@ class CriticalPath extends GraphAlgorithm {
     };
   }
 }
-
-export { CriticalPath };

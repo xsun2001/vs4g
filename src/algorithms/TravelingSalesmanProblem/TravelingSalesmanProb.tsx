@@ -1,29 +1,32 @@
-import { GraphAlgorithm, Step, ParameterDescriptor } from "../../GraphAlgorithm";
-import { EdgeRenderHint, NodeRenderHint } from "../../ui/CanvasGraphRenderer";
-import { AdjacencyMatrix, Edge, Graph } from "../../GraphStructure";
+import { NewGraphAlgorithm, ParameterDescriptor, Step } from "@/GraphAlgorithm";
+import CanvasGraphRenderer from "@/ui/CanvasGraphRenderer";
+import { AdjacencyMatrix, Edge, Graph } from "@/GraphStructure";
+import { GraphRenderer } from "@/ui/GraphRenderer";
+import GraphMatrixInput from "@/ui/GraphMatrixInput";
+import { EdgeListFormatter } from "@/ui/GraphFormatter";
 
-class SalesmanPath extends GraphAlgorithm {
-  nodeRenderPatcher(): Partial<NodeRenderHint> {
-    return {
+export class TravelingSalesmanProb implements NewGraphAlgorithm {
+  category: string = "TravelingSalesmanProblem";
+  name: string = "TravelingSalesmanProb";
+  description: string = "TravelingSalesmanProb";
+  graphInputComponent = (
+    <GraphMatrixInput
+      checker={g => g}
+      description={"Please input an weighted & undirected graph"}
+      formatters={[new EdgeListFormatter(true, false)]}
+    />
+  );
+  graphRenderer: GraphRenderer = new CanvasGraphRenderer(true, "generic", {
+    node: {
       fillingColor: undefined,
       floatingData: undefined
-    };
-  }
-
-  edgeRenderPatcher(): Partial<EdgeRenderHint> {
-    return {
+    },
+    edge: {
       color: edge => (edge.datum.chosen ? "#db70db" : undefined),
       floatingData: edge => edge.datum.weight
-    };
-  }
-
-  id() {
-    return "SalesmanProblem";
-  }
-
-  parameters(): ParameterDescriptor[] {
-    return [];
-  }
+    }
+  });
+  parameters: ParameterDescriptor[] = [];
 
   judge(graph: Graph, edges: Edge[]) {
     //判断是否有点度大于2（排除分支情况）
@@ -175,5 +178,3 @@ class SalesmanPath extends GraphAlgorithm {
     yield* this.salesmanProb(graph, edges);
   }
 }
-
-export { SalesmanPath };

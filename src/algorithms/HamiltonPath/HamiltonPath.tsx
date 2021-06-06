@@ -1,10 +1,23 @@
-import { GraphAlgorithm, Step, ParameterDescriptor } from "../../GraphAlgorithm";
-import { EdgeRenderHint, NodeRenderHint } from "../../ui/CanvasGraphRenderer";
-import { AdjacencyMatrix, Graph } from "../../GraphStructure";
+import { NewGraphAlgorithm, ParameterDescriptor, Step } from "@/GraphAlgorithm";
+import CanvasGraphRenderer from "@/ui/CanvasGraphRenderer";
+import { AdjacencyMatrix, Graph } from "@/GraphStructure";
+import { GraphRenderer } from "@/ui/GraphRenderer";
+import GraphMatrixInput from "@/ui/GraphMatrixInput";
+import { EdgeListFormatter } from "@/ui/GraphFormatter";
 
-class HamiltonPath extends GraphAlgorithm {
-  nodeRenderPatcher(): Partial<NodeRenderHint> {
-    return {
+export class HamiltonPath implements NewGraphAlgorithm {
+  category: string = "HamiltonPath";
+  name: string = "HamiltonPath";
+  description: string = "HamiltonPath";
+  graphInputComponent = (
+    <GraphMatrixInput
+      checker={g => g}
+      description={"Please input an unweighted & directed graph"}
+      formatters={[new EdgeListFormatter(false, true)]}
+    />
+  );
+  graphRenderer: GraphRenderer = new CanvasGraphRenderer(true, "generic", {
+    node: {
       fillingColor: node => {
         if (node.datum.visited == 1) {
           return "#87ceeb";
@@ -17,23 +30,13 @@ class HamiltonPath extends GraphAlgorithm {
         }
       },
       floatingData: undefined
-    };
-  }
-
-  edgeRenderPatcher(): Partial<EdgeRenderHint> {
-    return {
+    },
+    edge: {
       color: edge => (edge.datum.chosen == true ? "#db70db" : undefined),
       floatingData: undefined
-    };
-  }
-
-  id() {
-    return "HamiltonPath";
-  }
-
-  parameters(): ParameterDescriptor[] {
-    return [];
-  }
+    }
+  });
+  parameters: ParameterDescriptor[] = [];
 
   successFlag: number;
 
@@ -124,5 +127,3 @@ class HamiltonPath extends GraphAlgorithm {
     };
   }
 }
-
-export { HamiltonPath };
