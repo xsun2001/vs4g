@@ -92,13 +92,13 @@ module.exports = {
     }
   },
   algo: {
-    BFS: {
+    Bfs: {
       name: "图的遍历：BFS算法",
       para: {
         start_point: "起始点"
       }
     },
-    DFS: {
+    Dfs: {
       name: "图的遍历：DFS算法",
       para: {
         start_point: "起始点"
@@ -136,11 +136,11 @@ module.exports = {
         start_point: "起始点"
       }
     },
-    SalesmanProblem: {
+    TravelingSalesmanProb: {
       name: "旅行商问题：分支限界法",
       para: {}
     },
-    SalesmanCheaperAlgorithm: {
+    SalesmanCheaperAlgo: {
       name: "旅行商问题：便宜算法",
       para: {}
     },

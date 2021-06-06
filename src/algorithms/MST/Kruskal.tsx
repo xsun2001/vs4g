@@ -1,17 +1,27 @@
-import { GraphAlgorithm, Step, ParameterDescriptor } from "../../GraphAlgorithm";
-import { EdgeRenderHint, NodeRenderHint } from "../../ui/CanvasGraphRenderer";
-import { AdjacencyMatrix, Graph } from "../../GraphStructure";
+import { NewGraphAlgorithm, ParameterDescriptor, Step } from "@/GraphAlgorithm";
+import CanvasGraphRenderer from "@/ui/CanvasGraphRenderer";
+import { AdjacencyMatrix, Graph } from "@/GraphStructure";
+import { GraphRenderer } from "@/ui/GraphRenderer";
+import GraphMatrixInput from "@/ui/GraphMatrixInput";
+import { EdgeListFormatter } from "@/ui/GraphFormatter";
 
-class Kruskal extends GraphAlgorithm {
-  nodeRenderPatcher(): Partial<NodeRenderHint> {
-    return {
+export class Kruskal implements NewGraphAlgorithm {
+  category: string = "MST";
+  name: string = "Kruskal";
+  description: string = "Kruskal";
+  graphInputComponent = (
+    <GraphMatrixInput
+      checker={g => g}
+      description={"Please input an weighted & undirected graph"}
+      formatters={[new EdgeListFormatter(true, false)]}
+    />
+  );
+  graphRenderer: GraphRenderer = new CanvasGraphRenderer(true, "generic", {
+    node: {
       fillingColor: undefined,
       floatingData: undefined
-    };
-  }
-
-  edgeRenderPatcher(): Partial<EdgeRenderHint> {
-    return {
+    },
+    edge: {
       color: edge => {
         if (edge.datum.chosen == 1) {
           return "#db70db";
@@ -24,16 +34,9 @@ class Kruskal extends GraphAlgorithm {
         }
       },
       floatingData: edge => edge.datum.weight
-    };
-  }
-
-  id() {
-    return "Kruskal";
-  }
-
-  parameters(): ParameterDescriptor[] {
-    return [];
-  }
+    }
+  });
+  parameters: ParameterDescriptor[] = [];
 
   father = [];
 
@@ -114,5 +117,3 @@ class Kruskal extends GraphAlgorithm {
     };
   }
 }
-
-export { Kruskal };

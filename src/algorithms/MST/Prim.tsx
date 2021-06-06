@@ -1,29 +1,32 @@
-import { GraphAlgorithm, Step, ParameterDescriptor } from "../../GraphAlgorithm";
-import { EdgeRenderHint, NodeRenderHint } from "../../ui/CanvasGraphRenderer";
-import { Graph } from "../../GraphStructure";
+import { NewGraphAlgorithm, ParameterDescriptor, Step } from "@/GraphAlgorithm";
+import CanvasGraphRenderer from "@/ui/CanvasGraphRenderer";
+import { Graph } from "@/GraphStructure";
+import { GraphRenderer } from "@/ui/GraphRenderer";
+import GraphMatrixInput from "@/ui/GraphMatrixInput";
+import { EdgeListFormatter } from "@/ui/GraphFormatter";
 
-class Prim extends GraphAlgorithm {
-  nodeRenderPatcher(): Partial<NodeRenderHint> {
-    return {
+export class Prim implements NewGraphAlgorithm {
+  category: string = "MST";
+  name: string = "Prim";
+  description: string = "Prim";
+  graphInputComponent = (
+    <GraphMatrixInput
+      checker={g => g}
+      description={"Please input an weighted & undirected graph, and please ensure that the graph is connected"}
+      formatters={[new EdgeListFormatter(true, false)]}
+    />
+  );
+  graphRenderer: GraphRenderer = new CanvasGraphRenderer(true, "generic", {
+    node: {
       fillingColor: undefined,
       floatingData: undefined
-    };
-  }
-
-  edgeRenderPatcher(): Partial<EdgeRenderHint> {
-    return {
+    },
+    edge: {
       color: edge => (edge.datum.chosen ? "#db70db" : undefined),
       floatingData: edge => edge.datum.weight
-    };
-  }
-
-  id() {
-    return "Prim";
-  }
-
-  parameters(): ParameterDescriptor[] {
-    return [];
-  }
+    }
+  });
+  parameters: ParameterDescriptor[] = [];
 
   *run(graph: Graph): Generator<Step> {
     //并查集初始化
@@ -77,5 +80,3 @@ class Prim extends GraphAlgorithm {
     };
   }
 }
-
-export { Prim };

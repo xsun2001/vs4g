@@ -1,10 +1,23 @@
-import { GraphAlgorithm, Step, ParameterDescriptor } from "../../GraphAlgorithm";
-import { EdgeRenderHint, NodeRenderHint } from "../../ui/CanvasGraphRenderer";
-import { AdjacencyMatrix, Graph } from "../../GraphStructure";
+import { NewGraphAlgorithm, ParameterDescriptor, Step } from "@/GraphAlgorithm";
+import CanvasGraphRenderer from "@/ui/CanvasGraphRenderer";
+import { AdjacencyMatrix, Graph } from "@/GraphStructure";
+import { GraphRenderer } from "@/ui/GraphRenderer";
+import GraphMatrixInput from "@/ui/GraphMatrixInput";
+import { EdgeListFormatter } from "@/ui/GraphFormatter";
 
-class EulerPath extends GraphAlgorithm {
-  nodeRenderPatcher(): Partial<NodeRenderHint> {
-    return {
+export class EulerPath implements NewGraphAlgorithm {
+  category: string = "EulerPath";
+  name: string = "EulerPath";
+  description: string = "EulerPath";
+  graphInputComponent = (
+    <GraphMatrixInput
+      checker={g => g}
+      description={"Please input an unweighted & directed graph"}
+      formatters={[new EdgeListFormatter(false, true)]}
+    />
+  );
+  graphRenderer: GraphRenderer = new CanvasGraphRenderer(true, "generic", {
+    node: {
       fillingColor: node => {
         if (node.datum.visited == 1) {
           return "#87ceeb";
@@ -17,23 +30,13 @@ class EulerPath extends GraphAlgorithm {
         }
       },
       floatingData: undefined
-    };
-  }
-
-  edgeRenderPatcher(): Partial<EdgeRenderHint> {
-    return {
+    },
+    edge: {
       color: edge => (edge.datum.visited == true ? "#db70db" : undefined),
       floatingData: undefined
-    };
-  }
-
-  id() {
-    return "EulerPath";
-  }
-
-  parameters(): ParameterDescriptor[] {
-    return [];
-  }
+    }
+  });
+  parameters: ParameterDescriptor[] = [];
 
   nodeList = [];
   ptr: number;
@@ -113,5 +116,3 @@ class EulerPath extends GraphAlgorithm {
     };
   }
 }
-
-export { EulerPath };
