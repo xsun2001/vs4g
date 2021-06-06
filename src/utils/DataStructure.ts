@@ -12,7 +12,8 @@ export class Queue<type = any> {
   }
 
   clear(): void {
-    (this.head = this.tail = 0), (this.values = []);
+    this.head = this.tail = 0;
+    this.values = [];
   }
 
   front(): type {
@@ -43,7 +44,8 @@ export class Stack<type = any> {
   }
 
   clear(): void {
-    (this.count = 0), (this.values = []);
+    this.count = 0;
+    this.values = [];
   }
 
   top(): type {
@@ -53,7 +55,8 @@ export class Stack<type = any> {
 
   pop() {
     if (this.empty()) throw new Error("ds Stack : cannot pop() from an empty Stack!");
-    this.count--, this.values.pop();
+    this.count--;
+    this.values.pop();
   }
 
   size(): number {

@@ -1,30 +1,38 @@
-import { Queue } from "../../utils/DataStructure";
-import { GraphAlgorithm, Step } from "../../GraphAlgorithm";
-import { BipartiteMatrix, Node, Edge, Graph, NodeEdgeList } from "../../GraphStructure";
-import { EdgeRenderHint, NodeRenderHint } from "@/ui/CanvasGraphRenderer";
+import { Queue } from "@/utils/DataStructure";
+import { NewGraphAlgorithm, ParameterDescriptor, Step } from "@/GraphAlgorithm";
+import { BipartiteMatrix, Node, Edge, Graph, NodeEdgeList } from "@/GraphStructure";
+import CanvasGraphRenderer from "@/ui/CanvasGraphRenderer";
+import GraphMatrixInput from "@/ui/GraphMatrixInput";
+import { BipartiteMatrixFormatter } from "@/ui/GraphFormatter";
+import { GraphRenderer } from "@/ui/GraphRenderer";
 
-class KuhnMunkres extends GraphAlgorithm {
-  // constructor() {
-  //   super("KuhnMunkres Algorithm", "Kuhn-Munkres algorithm for Maximum Weighted Matching in Bipartite Graph");
-  // }
+// !!! alpha version !!!
+export class NewKuhnMunkres_alpha implements NewGraphAlgorithm {
+  category: string = "Matching";
+  name: string = "mwbm_km";
+  description: string = "[alpha version] Kuhn-Munkres algorithm for Maximum Weighted Matching in Bipartite Graph";
 
-  id() {
-    return "mwbm_km";
-  }
-
-  nodeRenderPatcher(): Partial<NodeRenderHint> {
-    return {
+  graphInputComponent = (
+    <GraphMatrixInput
+      formatters={[new BipartiteMatrixFormatter(true)]}
+      checker={g => {
+        if (!(g instanceof BipartiteMatrix) || g.leftSide.length !== g.rightSide.length)
+          throw new Error(".input.error.invalid");
+        return g;
+      }}
+      description={"Please input a weighted bipartite graph using n*n matrix"}
+    />
+  );
+  graphRenderer: GraphRenderer = new CanvasGraphRenderer(false, "bipartite", {
+    node: {
       borderColor: node => (node.datum.side === "left" ? undefined : node.datum.label === 1 ? "#77ff77" : "#7777ff"),
       fillingColor: node => (node.datum.in ? "#cccccc" : "#ffffff"),
       floatingData: node => {
         if (node.datum.side === "left") return `L${node.id}`;
         return `R${node.id}`;
       }
-    };
-  }
-
-  edgeRenderPatcher(): Partial<EdgeRenderHint> {
-    return {
+    },
+    edge: {
       floatingData: edge => edge.datum.weight,
       thickness: edge => (edge.datum.valid ? 5 : undefined),
       color: edge => {
@@ -33,9 +41,11 @@ class KuhnMunkres extends GraphAlgorithm {
         if (edge.datum.marked) return "#ff0000";
         return undefined;
       }
-    };
-  }
+    }
+  });
+  parameters: ParameterDescriptor[] = [];
 
+  // old code
   private que: Queue<number> = new Queue<number>();
 
   private n: number = 0;
@@ -138,7 +148,8 @@ class KuhnMunkres extends GraphAlgorithm {
     this.markx[this.slackx[y]] = y;
     if (this.matchx[this.slackx[y]] !== -1) yield* this.flip(this.matchx[this.slackx[y]]);
     else yield this.getStep(18); // found augmenting path
-    (this.matchy[y] = this.slackx[y]), (this.matchx[this.slackx[y]] = y);
+    this.matchy[y] = this.slackx[y];
+    this.matchx[this.slackx[y]] = y;
   }
 
   *extand() {
@@ -163,9 +174,8 @@ class KuhnMunkres extends GraphAlgorithm {
   }
 
   *run(graph: Graph): Generator<Step> {
-    if (!(graph instanceof BipartiteMatrix)) throw new Error();
+    if (!(graph instanceof BipartiteMatrix)) throw new Error(".input.error.invalid");
     this.n = graph.mat.length;
-    if (this.n !== graph.mat[0].length) throw new Error("|X| != |Y|");
     this.w = graph.mat.map(line => line.map(e => e.weight));
     this.lx = Array.from({ length: this.n }, (_, x) => {
       let res = -Infinity;
@@ -173,13 +183,18 @@ class KuhnMunkres extends GraphAlgorithm {
       return res;
     });
     this.ly = Array.from({ length: this.n }, () => 0);
-    (this.X = graph.leftSide), (this.Y = graph.rightSide), (this.edges = graph.edges());
-    this.clear(this.matchx), this.clear(this.matchy), this.clear(this.markx);
+    [this.X, this.Y] = [graph.leftSide, graph.rightSide];
+    this.edges = graph.edges();
+    this.clear(this.matchx);
+    this.clear(this.matchy);
+    this.clear(this.markx);
     yield this.getStep(6); // inited
 
     for (let x = 0; x < this.n; ++x) {
-      this.clear(this.slackx), this.clear(this.slackv, Infinity);
-      this.clear(this.inS, false), this.clear(this.inT, false);
+      this.clear(this.slackx);
+      this.clear(this.slackv, Infinity);
+      this.clear(this.inS, false);
+      this.clear(this.inT, false);
       this.que.clear();
       this.addToS(x);
       yield this.getStep(8); // new x
@@ -215,5 +230,3 @@ class KuhnMunkres extends GraphAlgorithm {
     return { weight: this.totweight() };
   }
 }
-
-export { KuhnMunkres };

@@ -8,22 +8,36 @@ import { EulerPath } from "@/algorithms/EulerPath/EulerPath";
 import { HamiltonPath } from "@/algorithms/HamiltonPath/HamiltonPath";
 import { Kruskal } from "@/algorithms/MST/Kruskal";
 import { Prim } from "@/algorithms/MST/Prim";
-import { Dijkstra, NewDijkstra } from "@/algorithms/SSSP/Dijkstra";
-import { Ford } from "@/algorithms/SSSP/Ford";
+import { NewDijkstra } from "@/algorithms/SSSP/Dijkstra";
+import { NewFord } from "@/algorithms/SSSP/Ford";
 import { SalesmanPath } from "@/algorithms/TravelingSalesmanProblem/TravelingSalesmanProb";
 import { SalesmanCheaperAlgo } from "@/algorithms/TravelingSalesmanProblem/SalesmanCheaperAlgo";
 
-import { FordFulkerson } from "@/algorithms/networkflow/FordFulkerson";
-import { EdmondsKarp } from "@/algorithms/networkflow/EdmondsKarp";
-import { Dinic } from "@/algorithms/networkflow/Dinic";
-import { MinCostFlow } from "@/algorithms/networkflow/MinCostFlow";
-import { ZkwMCF } from "@/algorithms/networkflow/ZkwMCF";
-import { HungarianDFS } from "@/algorithms/matching/BipartiteMatching";
-import { KuhnMunkres } from "@/algorithms/matching/WeightedBipartiteMatching";
-import { Gabow } from "@/algorithms/matching/Matching";
-import { DMP } from "@/algorithms/planargraph/DMP";
+import { NewDMP_alpha } from "@/algorithms/planargraph/NewDMP";
 
-const newAlgorithms: NewGraphAlgorithm[] = [new NewDijkstra()];
+import { NewHungarianDFS } from "@/algorithms/matching/BipartiteMatching";
+import { NewKuhnMunkres_alpha } from "@/algorithms/matching/WeightedBipartiteMatching";
+import { NewEdmondsGabow_alpha } from "@/algorithms/matching/Matching";
+
+import { NewFordFulkerson } from "@/algorithms/networkflow/FordFulkerson";
+import { NewEdmondsKarp } from "@/algorithms/networkflow/EdmondsKarp";
+import { NewDinic } from "@/algorithms/networkflow/Dinic";
+import { NewMinCostFlow } from "@/algorithms/networkflow/MinCostFlow";
+import { NewZkwMCF } from "@/algorithms/networkflow/ZkwMCF";
+
+const newAlgorithms: NewGraphAlgorithm[] = [
+  new NewDijkstra(),
+  new NewFord(),
+  new NewDMP_alpha(),
+  new NewHungarianDFS(),
+  new NewKuhnMunkres_alpha(),
+  new NewEdmondsGabow_alpha(),
+  new NewFordFulkerson(),
+  new NewEdmondsKarp(),
+  new NewDinic(),
+  new NewMinCostFlow(),
+  new NewZkwMCF()
+];
 
 const algorithms = new Map<string, () => GraphAlgorithm>([
   ["BFS", () => new BfsFindPath()],
@@ -33,19 +47,8 @@ const algorithms = new Map<string, () => GraphAlgorithm>([
   ["HamiltonPath", () => new HamiltonPath()],
   ["Kruskal", () => new Kruskal()],
   ["Prim", () => new Prim()],
-  ["Dijkstra", () => new Dijkstra()],
-  ["Ford", () => new Ford()],
   ["SalesmanProblem", () => new SalesmanPath()],
-  ["SalesmanCheaperAlgorithm", () => new SalesmanCheaperAlgo()],
-  ["mf_ff", () => new FordFulkerson()],
-  ["mf_ek", () => new EdmondsKarp()],
-  ["mf_dinic", () => new Dinic()],
-  ["mcf_classic", () => new MinCostFlow()],
-  ["mcf_zkw", () => new ZkwMCF()],
-  ["mbm_hungarian", () => new HungarianDFS()],
-  ["mwbm_km", () => new KuhnMunkres()],
-  ["mm_gabow", () => new Gabow()],
-  ["pt_dmp", () => new DMP()]
+  ["SalesmanCheaperAlgorithm", () => new SalesmanCheaperAlgo()]
 ]);
 
 const newAlgorithm = name => algorithms.get(name)?.();

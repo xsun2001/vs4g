@@ -209,7 +209,7 @@ class CanvasGraphRenderer implements GraphRenderer {
   private bipartiteConstraint(): Force<any, any> {
     return () => {
       this.nodes.forEach(node => {
-        node.x = this.size.width * (node.graphNode.datum.size === "left" ? 0.333 : 0.667);
+        node.x = this.size.width * (node.graphNode.datum.side === "left" ? 0.333 : 0.667);
         node.y = this.yInRange(node.y);
       });
     };

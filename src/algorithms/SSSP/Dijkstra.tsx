@@ -1,9 +1,9 @@
-import { NewGraphAlgorithm, ParameterDescriptor, Step } from "@/GraphAlgorithm";
+import { NewGraphAlgorithm, ParameterDescriptor, rangedIntParser, Step } from "@/GraphAlgorithm";
 import CanvasGraphRenderer from "@/ui/CanvasGraphRenderer";
 import { AdjacencyMatrix, Graph } from "@/GraphStructure";
 import { GraphRenderer } from "@/ui/GraphRenderer";
-import GraphMatrixInput from "@/ui/input-methods/GraphMatrixInput";
-import { EdgeListFormatter } from "@/ui/input-methods/GraphFormatter";
+import GraphMatrixInput from "@/ui/GraphMatrixInput";
+import { EdgeListFormatter } from "@/ui/GraphFormatter";
 
 type NodeState = "relaxing" | "updating" | "updated" | "relaxed" | string;
 const stateColorMap: Map<NodeState, string> = new Map([
@@ -12,7 +12,6 @@ const stateColorMap: Map<NodeState, string> = new Map([
   ["updated", "#adff2f"],
   ["relaxed", "#fff0f5"]
 ]);
-
 
 export class NewDijkstra implements NewGraphAlgorithm {
   category: string = "SSSP";

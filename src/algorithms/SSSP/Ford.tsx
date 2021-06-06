@@ -1,40 +1,38 @@
-import { GraphAlgorithm, Step, ParameterDescriptor } from "../../GraphAlgorithm";
-import { EdgeRenderHint, NodeRenderHint } from "../../ui/CanvasGraphRenderer";
-import { AdjacencyMatrix, Graph } from "../../GraphStructure";
+import { NewGraphAlgorithm, ParameterDescriptor, rangedIntParser, Step } from "@/GraphAlgorithm";
+import CanvasGraphRenderer from "@/ui/CanvasGraphRenderer";
+import { AdjacencyMatrix, Graph } from "@/GraphStructure";
+import { GraphRenderer } from "@/ui/GraphRenderer";
+import GraphMatrixInput from "@/ui/GraphMatrixInput";
+import { EdgeListFormatter } from "@/ui/GraphFormatter";
 
-class Ford extends GraphAlgorithm {
-  nodeRenderPatcher(): Partial<NodeRenderHint> {
-    return {
+export class NewFord implements NewGraphAlgorithm {
+  category: string = "SSSP";
+  description: string = "Ford";
+  graphInputComponent = (
+    <GraphMatrixInput
+      checker={g => g}
+      description={"Please input a weighted & directed graph"}
+      formatters={[new EdgeListFormatter(true, true)]}
+    />
+  );
+  graphRenderer: GraphRenderer = new CanvasGraphRenderer(true, "generic", {
+    node: {
       fillingColor: node => (node.datum.visited == true ? "#ffff00" : undefined),
       floatingData: node =>
         `(${node.id},${node.datum.dist != Infinity && node.datum.dist != undefined ? node.datum.dist : "?"})`
-    };
-  }
-
-  edgeRenderPatcher(): Partial<EdgeRenderHint> {
-    return {
+    },
+    edge: {
       color: edge => (edge.datum.chosen == true ? "#db70db" : undefined),
       floatingData: edge => edge.datum.weight
-    };
-  }
-
-  id() {
-    return "Ford";
-  }
-
-  parameters(): ParameterDescriptor[] {
-    return [
-      {
-        name: "start_point",
-        parser: (text, graph) => {
-          let x = parseInt(text);
-          if (isNaN(x)) throw new Error(".input.error.nan");
-          if (x < 0 || x > graph.nodes().length) throw new Error(".input.error.out_of_range");
-          return x;
-        }
-      }
-    ];
-  }
+    }
+  });
+  name: string = "Ford";
+  parameters: ParameterDescriptor[] = [
+    {
+      name: "start_point",
+      parser: rangedIntParser(0, (_: string, graph: Graph) => graph.nodes().length)
+    }
+  ];
 
   *run(graph: Graph, startPoint: number): Generator<Step> {
     let mat = AdjacencyMatrix.from(graph, true).mat;
@@ -72,28 +70,6 @@ class Ford extends GraphAlgorithm {
         graph: graph,
         codePosition: new Map<string, number>([["pseudo", 1]])
       };
-      /*for (let j = 0; j < graph.nodes().length; j++) {
-        for (let k = 0; k < graph.nodes().length; k++) {
-          let existFlag = 0;
-          for (let l = 0; l < graph.edges().length; l++) {
-            if (graph.edges()[l].source == j && graph.edges()[l].target == k) {
-              existFlag = 1;
-            }
-          }
-          if (existFlag == 1 && graph.nodes()[j].datum.dist + mat[j][k] < graph.nodes()[k].datum.dist) {
-            graph.nodes()[k].datum.dist = graph.nodes()[j].datum.dist + mat[j][k];
-            flag = 1;
-            graph.nodes()[j].datum.visited = true;
-            graph.nodes()[k].datum.visited = true;
-            yield {
-              graph: graph,
-              codePosition: new Map<string, number>([["pseudo", 3]])
-            };
-            graph.nodes()[j].datum.visited = false;
-            graph.nodes()[k].datum.visited = false;
-          }
-        }
-      }*/
       yield {
         graph: graph,
         codePosition: new Map<string, number>([["pseudo", 3]])
@@ -108,5 +84,3 @@ class Ford extends GraphAlgorithm {
     };
   }
 }
-
-export { Ford };

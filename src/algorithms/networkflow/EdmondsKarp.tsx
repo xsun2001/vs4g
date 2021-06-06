@@ -1,56 +1,61 @@
-import { GraphAlgorithm, ParameterDescriptor, parseRangedInt, Step } from "../../GraphAlgorithm";
-import { Graph, Node, NodeEdgeList } from "../../GraphStructure";
-import { Queue } from "../../utils/DataStructure";
-import { NetworkFlowBase, _Edge, v } from "./Common";
-import { EdgeRenderHint, NodeRenderHint } from "@/ui/CanvasGraphRenderer";
+import { NewGraphAlgorithm, ParameterDescriptor, parseRangedInt, Step } from "@/GraphAlgorithm";
+import { Graph, Node, NodeEdgeList } from "@/GraphStructure";
+import { Queue } from "@/utils/DataStructure";
+import { NetworkFlowBase, _Edge, v, cm, c, noSelfLoop } from "./Common";
+import CanvasGraphRenderer from "@/ui/CanvasGraphRenderer";
+import { GraphRenderer } from "@/ui/GraphRenderer";
+import GraphMatrixInput from "@/ui/GraphMatrixInput";
+import { NetworkFormatter } from "@/ui/GraphFormatter";
 
-class EdmondsKarp extends GraphAlgorithm {
-  // constructor() {
-  //   super("EdmondsKarp", "Edmonds-Karp algorithm for Maximum Network Flow");
-  // }
+export class NewEdmondsKarp implements NewGraphAlgorithm {
+  category: string = "network flow";
+  name: string = "mf_ek";
+  description: string = "Edmonds-Karp algorithm for Maximum Network Flow";
 
-  id() {
-    return "mf_ek";
-  }
-
-  parameters(): ParameterDescriptor[] {
-    return [
-      {
-        name: "source_vertex",
-        parser: (text, graph) => parseRangedInt(text, 0, graph.nodes().length)
-      },
-      {
-        name: "target_vertex",
-        parser: (text, graph) => parseRangedInt(text, 0, graph.nodes().length)
-      }
-    ];
-  }
-
-  nodeRenderPatcher(): Partial<NodeRenderHint> {
-    return {
+  graphInputComponent = (
+    <GraphMatrixInput
+      checker={noSelfLoop}
+      description={"Please input a network flow graph"}
+      formatters={[new NetworkFormatter(false)]}
+    />
+  );
+  graphRenderer: GraphRenderer = new CanvasGraphRenderer(true, "generic", {
+    node: {
       fillingColor: node => {
         switch (node.datum.tag) {
           case 1: // in queue
-            return "#3333ff";
+            return cm.get(c.Blue | c.light);
           case 2: // checking
-            return "#dddd00";
+            return cm.get(c.Yellow | c.light);
           case 3: // checked
-            return "#33ff33";
+            return cm.get(c.Green | c.light);
         }
-        return "#dddddd";
+        return cm.get(c.Grey | c.light);
       },
       floatingData: node => node.id.toString()
-    };
-  }
-
-  edgeRenderPatcher(): Partial<EdgeRenderHint> {
-    return {
+    },
+    edge: {
       thickness: edge => (edge.datum.mark !== 0 ? 5 : 3),
-      color: edge => (edge.datum.mark === 1 ? "#33ff33" : edge.datum.mark === -1 ? "#ff3333" : "#dddddd"),
+      color: edge => {
+        if (edge.datum.mark === 1) return cm.get(c.Green | c.dark);
+        if (edge.datum.mark === -1) return cm.get(c.Red | c.dark);
+        return cm.get(c.Grey);
+      },
       floatingData: edge => `(${v(edge.datum.flow)},${v(edge.datum.used)})`
-    };
-  }
+    }
+  });
+  parameters: ParameterDescriptor[] = [
+    {
+      name: "source_vertex",
+      parser: (text, graph) => parseRangedInt(text, 0, graph.nodes().length)
+    },
+    {
+      name: "target_vertex",
+      parser: (text, graph) => parseRangedInt(text, 0, graph.nodes().length)
+    }
+  ];
 
+  // old code
   private que: Queue<number> = new Queue<number>();
 
   private E: NetworkFlowBase;
@@ -98,7 +103,8 @@ class EdmondsKarp extends GraphAlgorithm {
 
   *bfs() {
     this.que.clear();
-    this.clear(this.eid), this.clear(this.pre);
+    this.clear(this.eid);
+    this.clear(this.pre);
     this.clear(this.flw, Infinity);
     this.clear(this.tag, 0);
 
@@ -144,7 +150,7 @@ class EdmondsKarp extends GraphAlgorithm {
     this.V = G.nodes();
     this.n = this.V.length;
     this.E = new NetworkFlowBase(G, this.n);
-    (this.S = Spos), (this.T = Tpos);
+    [this.S, this.T] = [Spos, Tpos];
     this.delta = this.maxflow = 0;
     while (yield* this.bfs()) {
       this.delta = this.flw[this.T];
@@ -159,5 +165,3 @@ class EdmondsKarp extends GraphAlgorithm {
     return { flow: this.maxflow };
   }
 }
-
-export { EdmondsKarp };

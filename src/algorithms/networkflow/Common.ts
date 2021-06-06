@@ -1,8 +1,38 @@
-import { Graph, Edge, hasSelfLoop } from "../../GraphStructure";
+import { Graph, Edge, hasSelfLoop } from "@/GraphStructure";
 
 let v = x => x ?? "?";
 let iv = x => (x === Infinity ? "∞" : v(x));
 export { v, iv };
+
+export enum c {
+  Red = 1,
+  Green = 2,
+  Blue = 4,
+  Yellow = 3,
+  Grey = 8,
+  light = 16,
+  dark = 32
+}
+export const cm: Map<number, string> = new Map([
+  [c.Red | c.light, "#ffbbbb"],
+  [c.Red, "#ff7777"],
+  [c.Red | c.dark, "#ff3333"],
+  [c.Green | c.light, "#bbffbb"],
+  [c.Green, "#77ff77"],
+  [c.Green | c.dark, "#33ff33"],
+  [c.Blue | c.light, "#bbbbff"],
+  [c.Blue, "#7777ff"],
+  [c.Blue | c.dark, "#3333ff"],
+  [c.Grey | c.light, "#dddddd"],
+  [c.Grey, "#bbbbbb"],
+  [c.Yellow | c.light, "#eeee77"],
+  [c.Yellow, "#eeee33"]
+]);
+
+export function noSelfLoop(g: Graph): Graph {
+  if (hasSelfLoop(g)) throw new Error(".input.error.self_loop");
+  return g;
+}
 
 export class _Edge {
   public mark: boolean = false;
