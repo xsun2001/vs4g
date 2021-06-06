@@ -1,13 +1,13 @@
 import { NewGraphAlgorithm, ParameterDescriptor, parseRangedInt, Step } from "@/GraphAlgorithm";
 import { Graph, Node, NodeEdgeList } from "@/GraphStructure";
 import { Queue } from "@/utils/DataStructure";
-import { NetworkFlowBase, _Edge, v, cm, c, noSelfLoop } from "./Common";
+import { NetworkFlowBase, _Edge, v, cm, c, noSelfLoop, MaxFlowGraphRenderer } from "./Common";
 import CanvasGraphRenderer from "@/ui/CanvasGraphRenderer";
 import { GraphRenderer } from "@/ui/GraphRenderer";
 import GraphMatrixInput from "@/ui/GraphMatrixInput";
 import { NetworkFormatter } from "@/ui/GraphFormatter";
 
-export class NewEdmondsKarp implements NewGraphAlgorithm {
+export class EdmondsKarp implements NewGraphAlgorithm {
   category: string = "network flow";
   name: string = "mf_ek";
   description: string = "Edmonds-Karp algorithm for Maximum Network Flow";
@@ -19,31 +19,7 @@ export class NewEdmondsKarp implements NewGraphAlgorithm {
       formatters={[new NetworkFormatter(false)]}
     />
   );
-  graphRenderer: GraphRenderer = new CanvasGraphRenderer(true, "generic", {
-    node: {
-      fillingColor: node => {
-        switch (node.datum.tag) {
-          case 1: // in queue
-            return cm.get(c.Blue | c.light);
-          case 2: // checking
-            return cm.get(c.Yellow | c.light);
-          case 3: // checked
-            return cm.get(c.Green | c.light);
-        }
-        return cm.get(c.Grey | c.light);
-      },
-      floatingData: node => node.id.toString()
-    },
-    edge: {
-      thickness: edge => (edge.datum.mark !== 0 ? 5 : 3),
-      color: edge => {
-        if (edge.datum.mark === 1) return cm.get(c.Green | c.dark);
-        if (edge.datum.mark === -1) return cm.get(c.Red | c.dark);
-        return cm.get(c.Grey);
-      },
-      floatingData: edge => `(${v(edge.datum.flow)},${v(edge.datum.used)})`
-    }
-  });
+  graphRenderer: GraphRenderer = new MaxFlowGraphRenderer();
   parameters: ParameterDescriptor[] = [
     {
       name: "source_vertex",

@@ -7,7 +7,7 @@ import { BipartiteMatrixFormatter } from "@/ui/GraphFormatter";
 import { GraphRenderer } from "@/ui/GraphRenderer";
 
 // !!! alpha version !!!
-export class NewKuhnMunkres_alpha implements NewGraphAlgorithm {
+export class KuhnMunkres_alpha implements NewGraphAlgorithm {
   category: string = "Matching";
   name: string = "mwbm_km";
   description: string = "[alpha version] Kuhn-Munkres algorithm for Maximum Weighted Matching in Bipartite Graph";

@@ -7,7 +7,7 @@ import { GraphRenderer } from "@/ui/GraphRenderer";
 import GraphMatrixInput from "@/ui/GraphMatrixInput";
 import { NetworkFormatter } from "@/ui/GraphFormatter";
 
-export class NewDinic implements NewGraphAlgorithm {
+export class Dinic implements NewGraphAlgorithm {
   category: string = "network flow";
   name: string = "mf_dinic";
   description: string = "Dinic algorithm for Maximum Network Flow";

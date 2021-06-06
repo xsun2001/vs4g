@@ -11,7 +11,7 @@ function clear<type>(buf: type[], val: type, cnt: number) {
 }
 
 // !!! alpha version !!!
-export class NewDMP_alpha implements NewGraphAlgorithm {
+export class DMP_alpha implements NewGraphAlgorithm {
   category: string = "PlanarGraph";
   name: string = "pt_dmp";
   description: string = "[alpha version] Demoucron-Malgrange-Pertuiset Algorithm for Planarity Testing";

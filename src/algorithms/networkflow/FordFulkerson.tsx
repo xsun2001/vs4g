@@ -1,12 +1,11 @@
-import { Step, NewGraphAlgorithm, ParameterDescriptor, parseRangedInt } from "@/GraphAlgorithm";
+import { NewGraphAlgorithm, ParameterDescriptor, parseRangedInt, Step } from "@/GraphAlgorithm";
 import { Graph, Node, NodeEdgeList } from "@/GraphStructure";
-import { NetworkFlowBase, _Edge, v, c, cm, noSelfLoop } from "./Common";
-import CanvasGraphRenderer from "@/ui/CanvasGraphRenderer";
+import { _Edge, MaxFlowGraphRenderer, NetworkFlowBase, noSelfLoop } from "./Common";
 import { GraphRenderer } from "@/ui/GraphRenderer";
 import GraphMatrixInput from "@/ui/GraphMatrixInput";
 import { NetworkFormatter } from "@/ui/GraphFormatter";
 
-export class NewFordFulkerson implements NewGraphAlgorithm {
+export class FordFulkerson implements NewGraphAlgorithm {
   category: string = "network flow";
   name: string = "mf_ff";
   description: string = "Ford-Fulkerson algorithm for Maximum Network Flow";
@@ -18,31 +17,7 @@ export class NewFordFulkerson implements NewGraphAlgorithm {
       formatters={[new NetworkFormatter(false)]}
     />
   );
-  graphRenderer: GraphRenderer = new CanvasGraphRenderer(true, "generic", {
-    node: {
-      fillingColor: node => {
-        switch (node.datum.tag) {
-          case 1: // checked
-            return cm.get(c.Blue | c.light);
-          case 2: // checking
-            return cm.get(c.Yellow | c.light);
-          case 3: // in stack
-            return cm.get(c.Green | c.light);
-        }
-        return cm.get(c.Grey | c.light);
-      },
-      floatingData: node => node.id.toString()
-    },
-    edge: {
-      thickness: edge => (edge.datum.mark !== 0 ? 5 : 3),
-      color: edge => {
-        if (edge.datum.mark === 1) return cm.get(c.Green | c.dark);
-        if (edge.datum.mark === -1) return cm.get(c.Red | c.dark);
-        return cm.get(c.Grey);
-      },
-      floatingData: edge => `(${v(edge.datum.flow)},${v(edge.datum.used)})`
-    }
-  });
+  graphRenderer: GraphRenderer = new MaxFlowGraphRenderer();
   parameters: ParameterDescriptor[] = [
     {
       name: "source_vertex",
@@ -84,7 +59,7 @@ export class NewFordFulkerson implements NewGraphAlgorithm {
     };
   }
 
-  *dfs(pos: number, lim: number) {
+  * dfs(pos: number, lim: number) {
     this.visit[pos] = true;
     this.tag[pos] = 2;
     yield this.getStep(1);
@@ -116,7 +91,7 @@ export class NewFordFulkerson implements NewGraphAlgorithm {
     return false;
   }
 
-  *run(G: Graph, Spos: number, Tpos: number): Generator<Step> {
+  * run(G: Graph, Spos: number, Tpos: number): Generator<Step> {
     this.V = G.nodes();
     this.n = this.V.length;
     this.E = new NetworkFlowBase(G, this.n);

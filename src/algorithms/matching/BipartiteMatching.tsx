@@ -6,7 +6,7 @@ import { GraphRenderer } from "@/ui/GraphRenderer";
 import { BipartiteListFormatter, BipartiteMatrixFormatter } from "@/ui/GraphFormatter";
 import { Int_AdjacencyList } from "@/algorithms/matching/Common";
 
-export class NewHungarianDFS implements NewGraphAlgorithm {
+export class HungarianDFS implements NewGraphAlgorithm {
   category: string = "Matching";
   name: string = "mbm_hungarian";
   description: string = "DFS version of Hungarian algorithm for Maximum Matching in Bipartite Graph";

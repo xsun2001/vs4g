@@ -13,7 +13,7 @@ const stateColorMap: Map<NodeState, string> = new Map([
   ["relaxed", "#fff0f5"]
 ]);
 
-export class NewDijkstra implements NewGraphAlgorithm {
+export class Dijkstra implements NewGraphAlgorithm {
   category: string = "SSSP";
   name: string = "Dijkstra";
   description: string = "Dijkstra";

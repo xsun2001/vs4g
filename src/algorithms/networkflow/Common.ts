@@ -1,4 +1,5 @@
-import { Graph, Edge, hasSelfLoop } from "@/GraphStructure";
+import { Edge, Graph, hasSelfLoop } from "@/GraphStructure";
+import CanvasGraphRenderer from "@/ui/CanvasGraphRenderer";
 
 let v = x => x ?? "?";
 let iv = x => (x === Infinity ? "∞" : v(x));
@@ -13,6 +14,7 @@ export enum c {
   light = 16,
   dark = 32
 }
+
 export const cm: Map<number, string> = new Map([
   [c.Red | c.light, "#ffbbbb"],
   [c.Red, "#ff7777"],
@@ -37,7 +39,8 @@ export function noSelfLoop(g: Graph): Graph {
 export class _Edge {
   public mark: boolean = false;
 
-  constructor(public to: number, public next: number, public flow: number, public cost?: number) {}
+  constructor(public to: number, public next: number, public flow: number, public cost?: number) {
+  }
 }
 
 export class NetworkFlowBase {
@@ -72,5 +75,35 @@ export class NetworkFlowBase {
     );
     if (clearMark) this.clearEdgeMark();
     return this._edges;
+  }
+}
+
+export class MaxFlowGraphRenderer extends CanvasGraphRenderer {
+  constructor() {
+    super(true, "generic", {
+      node: {
+        fillingColor: node => {
+          switch (node.datum.tag) {
+            case 1:
+              return cm.get(c.Blue | c.light);
+            case 2:
+              return cm.get(c.Yellow | c.light);
+            case 3:
+              return cm.get(c.Green | c.light);
+          }
+          return cm.get(c.Grey | c.light);
+        },
+        floatingData: node => node.id.toString()
+      },
+      edge: {
+        thickness: edge => (edge.datum.mark !== 0 ? 5 : 3),
+        color: edge => {
+          if (edge.datum.mark === 1) return cm.get(c.Green | c.dark);
+          if (edge.datum.mark === -1) return cm.get(c.Red | c.dark);
+          return cm.get(c.Grey);
+        },
+        floatingData: edge => `(${v(edge.datum.flow)},${v(edge.datum.used)})`
+      }
+    });
   }
 }

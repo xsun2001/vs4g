@@ -7,7 +7,7 @@ import { EdgeListFormatter } from "@/ui/GraphFormatter";
 import { GraphRenderer } from "@/ui/GraphRenderer";
 
 // !!! alpha version !!!
-export class NewEdmondsGabow_alpha implements NewGraphAlgorithm {
+export class EdmondsGabow_alpha implements NewGraphAlgorithm {
   category: string = "Matching";
   name: string = "mm_gabow";
   description: string = "[alpha version] Edmonds-Gabow algorithm for Maximum Matching in General Graph";

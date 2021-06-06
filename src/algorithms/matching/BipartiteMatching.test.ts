@@ -1,4 +1,4 @@
-import { NewHungarianDFS } from "./BipartiteMatching";
+import { HungarianDFS } from "./BipartiteMatching";
 import { BipartiteGraph, Graph } from "@/GraphStructure";
 
 let E = [
@@ -25,7 +25,7 @@ let G = new BipartiteGraph(6, 6, E);
 let A = { matched: 5 };
 
 test("HungarianDFS", () => {
-  let algo = new NewHungarianDFS().run(G);
+  let algo = new HungarianDFS().run(G);
   let step: any;
 
   let resG: Graph;

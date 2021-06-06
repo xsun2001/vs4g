@@ -5,7 +5,7 @@ import { GraphRenderer } from "@/ui/GraphRenderer";
 import GraphMatrixInput from "@/ui/GraphMatrixInput";
 import { EdgeListFormatter } from "@/ui/GraphFormatter";
 
-export class NewFord implements NewGraphAlgorithm {
+export class Ford implements NewGraphAlgorithm {
   category: string = "SSSP";
   description: string = "Ford";
   graphInputComponent = (
