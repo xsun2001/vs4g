@@ -26,6 +26,9 @@ function assertSymmetry(mat: number[][]): void {
   assertMatrix(mat, true);
   if (mat.some((line, i) => line.some((value, j) => value !== mat[j][i]))) throw new Error(".input.error.asymmetric");
 }
+function assertInRange(v: number, lower_bound: number, upper_bound: number): void {
+  if (v < lower_bound || v >= upper_bound) throw new Error(".input.erorr.out_of_range");
+}
 
 // oi style edge list
 export class EdgeListFormatter implements GraphFormatter {
@@ -52,6 +55,10 @@ export class EdgeListFormatter implements GraphFormatter {
         edges.push({ source: mat[i][0], target: mat[i][1], datum: {} });
       }
     }
+    edges.forEach(e => {
+      assertInRange(e.source, 0, n);
+      assertInRange(e.target, 0, n);
+    });
     return new EdgeList(n, edges);
   }
 
@@ -137,6 +144,10 @@ export class TextbookEdgeListFormatter implements GraphFormatter {
       if (this.weighted) edges.push({ source: mat[0][i], target: mat[1][i], datum: { weight: mat[2][i] } });
       else edges.push({ source: mat[0][i], target: mat[1][i], datum: {} });
     }
+    edges.forEach(e => {
+      assertInRange(e.source, 0, n);
+      assertInRange(e.target, 0, n);
+    });
     return new EdgeList(n, edges);
   }
 
@@ -163,6 +174,7 @@ export class ForwardListFormatter implements GraphFormatter {
       if (mat[0][s] < m) throw new Error(".input.error.non_increment");
       while (m < mat[0][s]) {
         if (mat[1][m] == null || (this.weighted && mat[2][m] == null)) throw new Error(".input.error.non_matrix");
+        assertInRange(mat[1][m], 0, n);
         if (this.weighted) adjlist[s].push([mat[1][m], { weight: mat[2][m] }]);
         else adjlist[s].push([mat[1][m], {}]);
         ++m;
@@ -195,6 +207,7 @@ export class AdjListFormatter implements GraphFormatter {
   constructor(public readonly weighted: boolean, public readonly directed: boolean) {}
 
   fromMatrix(mat: number[][]): Graph {
+    let n = mat.length;
     return new AdjacencyList(
       mat.map(line => {
         if (line.length === 0) throw new Error(".input.error.invalid_format");
@@ -203,9 +216,13 @@ export class AdjListFormatter implements GraphFormatter {
           let m = line.length;
           let res: [number, any][] = [];
           if (m % 2 !== 0) throw new Error(".input.error.invalid_format");
-          for (let i = 0; i < m; i += 2) res.push([line[i], { weight: line[i + 1] }]);
+          for (let i = 0; i < m; i += 2) {
+            assertInRange(line[i], 0, n);
+            res.push([line[i], { weight: line[i + 1] }]);
+          }
           return res;
         }
+        line.forEach(v => assertInRange(v, 0, n));
         return line.map(t => [t, {}]);
       })
     );
@@ -244,6 +261,10 @@ export class NetworkFormatter implements GraphFormatter {
         edges.push({ source: mat[i][0], target: mat[i][1], datum: { flow: mat[i][2] } });
       }
     }
+    edges.forEach(e => {
+      assertInRange(e.source, 0, n);
+      assertInRange(e.target, 0, n);
+    });
     return new EdgeList(n, edges);
   }
 
@@ -285,6 +306,10 @@ export class BipartiteListFormatter implements GraphFormatter {
         edges.push({ source: mat[i][0], target: mat[i][1], datum: {} });
       }
     }
+    edges.forEach(e => {
+      assertInRange(e.source, 0, nl);
+      assertInRange(e.target, nl, nl + nr);
+    });
     return new BipartiteGraph(nl, nr, edges);
   }
 
