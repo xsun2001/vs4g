@@ -2,10 +2,10 @@ import { NewGraphAlgorithm, ParameterDescriptor, parseRangedInt, Step } from "@/
 import { Graph, Node, NodeEdgeList } from "@/GraphStructure";
 import { Queue } from "@/utils/DataStructure";
 import { NetworkFlowBase, _Edge, v, cm, c, noSelfLoop, MaxFlowGraphRenderer } from "./Common";
-import CanvasGraphRenderer from "@/ui/CanvasGraphRenderer";
-import { GraphRenderer } from "@/ui/GraphRenderer";
-import GraphMatrixInput from "@/ui/GraphMatrixInput";
-import { NetworkFormatter } from "@/ui/GraphFormatter";
+import NetworkGraphRenderer from "@/ui/render/NetworkGraphRenderer";
+import { GraphRenderer } from "@/ui/render/GraphRenderer";
+import GraphMatrixInput from "@/ui/input/GraphMatrixInput";
+import { NetworkFormatter } from "@/ui/input/GraphFormatter";
 
 export class EdmondsKarp implements NewGraphAlgorithm {
   category: string = "network flow";

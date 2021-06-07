@@ -1,4 +1,7 @@
 import codeMap from "./codeMap";
+
+import { GridBFS } from "@/algorithms/Grid/GridBFS";
+
 import { NewGraphAlgorithm } from "@/GraphAlgorithm";
 import { Dfs } from "@/algorithms/BFS&DFS/Dfs"
 import { Bfs } from "@/algorithms/BFS&DFS/Bfs"
@@ -32,6 +35,7 @@ const newAlgorithms: NewGraphAlgorithm[] = [
   new HamiltonPath(),
   new Kruskal(),
   new Prim(),
+  new GridBFS(),
   new Dijkstra(),
   new Ford(),
   new TravelingSalesmanProb(),

@@ -1,10 +1,10 @@
 import React, { useContext, useState } from "react";
 import { Form, Message } from "semantic-ui-react";
 import { Spi, SpiContext } from "@/spi";
-import { GraphInputComponent } from "@/ui/GraphInputComponent";
+import { GraphInputComponent } from "@/ui/input/GraphInputComponent";
 import { Graph } from "@/GraphStructure";
 import { GraphEditorContext } from "@/GraphEditorContext";
-import { GraphFormatter } from "@/ui/GraphFormatter";
+import { GraphFormatter } from "@/ui/input/GraphFormatter";
 
 export interface GraphMatrixInputProps {
   formatters: GraphFormatter[];

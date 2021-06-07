@@ -2,10 +2,10 @@ import { NewGraphAlgorithm, ParameterDescriptor, parseRangedInt, Step } from "@/
 import { Edge, Graph, Node, NodeEdgeList } from "@/GraphStructure";
 import { Queue } from "@/utils/DataStructure";
 import { NetworkFlowBase, _Edge, v, iv, noSelfLoop, cm, c } from "./Common";
-import GraphMatrixInput from "@/ui/GraphMatrixInput";
-import { NetworkFormatter } from "@/ui/GraphFormatter";
-import { GraphRenderer } from "@/ui/GraphRenderer";
-import CanvasGraphRenderer from "@/ui/CanvasGraphRenderer";
+import GraphMatrixInput from "@/ui/input/GraphMatrixInput";
+import { NetworkFormatter } from "@/ui/input/GraphFormatter";
+import { GraphRenderer } from "@/ui/render/GraphRenderer";
+import NetworkGraphRenderer from "@/ui/render/NetworkGraphRenderer";
 
 export class MinCostFlow implements NewGraphAlgorithm {
   category: string = "network flow";
@@ -19,7 +19,7 @@ export class MinCostFlow implements NewGraphAlgorithm {
       formatters={[new NetworkFormatter(true)]}
     />
   );
-  graphRenderer: GraphRenderer = new CanvasGraphRenderer(true, "generic", {
+  graphRenderer: GraphRenderer = new NetworkGraphRenderer(true, "generic", {
     node: {
       borderColor: node => {
         if (node.datum.cur) return cm.get(c.Red);

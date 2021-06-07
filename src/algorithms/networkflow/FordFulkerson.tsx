@@ -1,9 +1,9 @@
 import { NewGraphAlgorithm, ParameterDescriptor, parseRangedInt, Step } from "@/GraphAlgorithm";
 import { Graph, Node, NodeEdgeList } from "@/GraphStructure";
 import { _Edge, MaxFlowGraphRenderer, NetworkFlowBase, noSelfLoop } from "./Common";
-import { GraphRenderer } from "@/ui/GraphRenderer";
-import GraphMatrixInput from "@/ui/GraphMatrixInput";
-import { NetworkFormatter } from "@/ui/GraphFormatter";
+import { GraphRenderer } from "@/ui/render/GraphRenderer";
+import GraphMatrixInput from "@/ui/input/GraphMatrixInput";
+import { NetworkFormatter } from "@/ui/input/GraphFormatter";
 
 export class FordFulkerson implements NewGraphAlgorithm {
   category: string = "network flow";

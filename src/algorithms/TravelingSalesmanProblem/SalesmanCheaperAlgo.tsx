@@ -1,9 +1,9 @@
 import { NewGraphAlgorithm, ParameterDescriptor, Step } from "@/GraphAlgorithm";
-import CanvasGraphRenderer from "@/ui/CanvasGraphRenderer";
+import CanvasGraphRenderer from "@/ui/render/NetworkGraphRenderer";
 import { AdjacencyMatrix, Graph } from "@/GraphStructure";
-import { GraphRenderer } from "@/ui/GraphRenderer";
-import GraphMatrixInput from "@/ui/GraphMatrixInput";
-import { EdgeListFormatter } from "@/ui/GraphFormatter";
+import { GraphRenderer } from "@/ui/render/GraphRenderer";
+import GraphMatrixInput from "@/ui/input/GraphMatrixInput";
+import { EdgeListFormatter } from "@/ui/input/GraphFormatter";
 
 export class SalesmanCheaperAlgo implements NewGraphAlgorithm {
   category: string = "TravelingSalesmanProblem";

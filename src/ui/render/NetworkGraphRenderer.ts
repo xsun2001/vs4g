@@ -1,7 +1,7 @@
 import { Force, SimulationLinkDatum, SimulationNodeDatum } from "d3-force";
 import { Edge, Graph, Node } from "@/GraphStructure";
 import * as d3 from "d3";
-import { GraphRenderer } from "@/ui/GraphRenderer";
+import { AbstractGraphRenderer, GraphRenderer } from "@/ui/render/GraphRenderer";
 import cloneDeep from "lodash.clonedeep";
 
 export interface GraphRenderType {
@@ -80,7 +80,7 @@ const defaultRenderHints: RenderHints = {
   }
 };
 
-class CanvasGraphRenderer implements GraphRenderer {
+class NetworkGraphRenderer extends AbstractGraphRenderer implements GraphRenderer {
   public nodes: D3SimulationNode[];
   public edges: D3SimulationEdge[];
   public canvas: HTMLCanvasElement;
@@ -94,6 +94,7 @@ class CanvasGraphRenderer implements GraphRenderer {
   };
 
   constructor(directed: boolean, renderType: "generic" | "bipartite", patcher: DeepPartial<RenderHints>) {
+    super();
     this.directed = directed;
     this.renderType = renderType;
     this.patcher = patcher;
@@ -114,7 +115,7 @@ class CanvasGraphRenderer implements GraphRenderer {
 
   // update function
   // modify information and try to start/restart simulation and rendering
-  updateGraph(graph: Graph) {
+  onGraphUpdated(graph: Graph) {
     console.log(graph);
     const nodes = graph.nodes().map(toD3NodeDatum);
     const edges = graph.edges().map(toD3EdgeDatum);
@@ -168,7 +169,7 @@ class CanvasGraphRenderer implements GraphRenderer {
     }
   }
 
-  bindCanvas(canvas: HTMLCanvasElement): void {
+  onCanvasUpdated(canvas: HTMLCanvasElement): void {
     console.log(canvas);
     this.canvas = canvas;
     let width = this.canvas.clientWidth, height = this.canvas.clientHeight;
@@ -182,7 +183,7 @@ class CanvasGraphRenderer implements GraphRenderer {
   }
 
   private xInRange(x: number): number {
-    return CanvasGraphRenderer.makeInRange(
+    return NetworkGraphRenderer.makeInRange(
       x,
       this.hint("general", "nodeRadius"),
       this.size.width - this.hint("general", "nodeRadius")
@@ -190,7 +191,7 @@ class CanvasGraphRenderer implements GraphRenderer {
   }
 
   private yInRange(y: number): number {
-    return CanvasGraphRenderer.makeInRange(
+    return NetworkGraphRenderer.makeInRange(
       y,
       this.hint("general", "nodeRadius"),
       this.size.height - this.hint("general", "nodeRadius")
@@ -300,7 +301,7 @@ class CanvasGraphRenderer implements GraphRenderer {
     // TODO: Render popup data
   }
 
-  finish(): void {
+  cleanup(): void {
     if (this.simulation) {
       this.simulation.stop();
       d3.select(this.canvas).on(".drag", null);
@@ -309,4 +310,4 @@ class CanvasGraphRenderer implements GraphRenderer {
   }
 }
 
-export default CanvasGraphRenderer;
+export default NetworkGraphRenderer;

@@ -1,9 +1,9 @@
 import { NewGraphAlgorithm, ParameterDescriptor, rangedIntParser, Step } from "@/GraphAlgorithm";
-import CanvasGraphRenderer from "@/ui/CanvasGraphRenderer";
+import CanvasGraphRenderer from "@/ui/render/NetworkGraphRenderer";
 import { AdjacencyMatrix, Graph } from "@/GraphStructure";
-import { GraphRenderer } from "@/ui/GraphRenderer";
-import GraphMatrixInput from "@/ui/GraphMatrixInput";
-import { EdgeListFormatter } from "@/ui/GraphFormatter";
+import { GraphRenderer } from "@/ui/render/GraphRenderer";
+import GraphMatrixInput from "@/ui/input/GraphMatrixInput";
+import { EdgeListFormatter } from "@/ui/input/GraphFormatter";
 
 export class Bfs implements NewGraphAlgorithm {
   category: string = "BFS&DFS";
@@ -44,7 +44,7 @@ export class Bfs implements NewGraphAlgorithm {
     }
   ];
 
-  *run(graph: Graph, start_point: number): Generator<Step> {
+  * run(graph: Graph, start_point: number): Generator<Step> {
     graph = AdjacencyMatrix.from(graph, true);
     graph.nodes().forEach(n => ((n.datum.visited = 0), (n.datum.dist = -1)));
 

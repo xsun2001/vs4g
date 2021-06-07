@@ -68,7 +68,8 @@ export function fromRandom(
 }
 
 export class NodeEdgeList implements Graph {
-  constructor(protected _nodes: Node[], protected _edges: Edge[]) {}
+  constructor(protected _nodes: Node[], protected _edges: Edge[]) {
+  }
 
   static from(g: Graph) {
     return new NodeEdgeList(g.nodes(), g.edges());
@@ -327,5 +328,27 @@ export class BipartiteMatrix extends BipartiteGraph implements Graph {
 
   set(x: number, y: number, a: any) {
     this.mat[x][y] = a;
+  }
+}
+
+// TODO: Graph interface should be more generic
+export class GridGraph implements Graph {
+  public readonly width;
+  public readonly height;
+
+  constructor(public grids: number[][]) {
+    if (grids.some(line => line.length !== grids[0].length)) {
+      throw new Error(".graph.grid.error.not_matrix");
+    }
+    this.height = grids.length;
+    this.width = grids[0].length;
+  }
+
+  edges(): Edge[] {
+    throw new Error(".graph.grid.unsupported");
+  }
+
+  nodes(): Node[] {
+    throw new Error(".graph.grid.unsupported");
   }
 }

@@ -1,5 +1,5 @@
 import { Edge, Graph, hasSelfLoop } from "@/GraphStructure";
-import CanvasGraphRenderer from "@/ui/CanvasGraphRenderer";
+import NetworkGraphRenderer from "@/ui/render/NetworkGraphRenderer";
 
 let v = x => x ?? "?";
 let iv = x => (x === Infinity ? "∞" : v(x));
@@ -78,7 +78,7 @@ export class NetworkFlowBase {
   }
 }
 
-export class MaxFlowGraphRenderer extends CanvasGraphRenderer {
+export class MaxFlowGraphRenderer extends NetworkGraphRenderer {
   constructor() {
     super(true, "generic", {
       node: {

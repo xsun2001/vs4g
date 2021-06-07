@@ -1,16 +1,15 @@
 import { NewGraphAlgorithm, ParameterDescriptor, rangedIntParser, Step } from "@/GraphAlgorithm";
-import CanvasGraphRenderer from "@/ui/CanvasGraphRenderer";
 import { AdjacencyMatrix, Graph } from "@/GraphStructure";
-import { GraphRenderer } from "@/ui/GraphRenderer";
-import GraphMatrixInput from "@/ui/GraphMatrixInput";
+import { GraphRenderer } from "@/ui/render/GraphRenderer";
+import GraphMatrixInput from "@/ui/input/GraphMatrixInput";
 import {
   AdjListFormatter,
   AdjMatrixFormatter,
   EdgeListFormatter,
   ForwardListFormatter,
-  IncMatrixFormatter,
   TextbookEdgeListFormatter
-} from "@/ui/GraphFormatter";
+} from "@/ui/input/GraphFormatter";
+import NetworkGraphRenderer from "@/ui/render/NetworkGraphRenderer";
 
 type NodeState = "relaxing" | "updating" | "updated" | "relaxed" | string;
 const stateColorMap: Map<NodeState, string> = new Map([
@@ -37,7 +36,7 @@ export class Dijkstra implements NewGraphAlgorithm {
       ]}
     />
   );
-  graphRenderer: GraphRenderer = new CanvasGraphRenderer(true, "generic", {
+  graphRenderer: GraphRenderer = new NetworkGraphRenderer(true, "generic", {
     node: {
       fillingColor: node => stateColorMap.get(node.datum.state),
       floatingData: node => {
@@ -63,7 +62,7 @@ export class Dijkstra implements NewGraphAlgorithm {
     }
   ];
 
-  *run(graph: Graph, startPoint: number): Generator<Step> {
+  * run(graph: Graph, startPoint: number): Generator<Step> {
     let mat = AdjacencyMatrix.from(graph, true).mat.map(line => line.map(datum => (datum ? datum.weight || 1 : 0)));
     const getState = (id: number) => graph.nodes()[id].datum.state as NodeState;
     const setState = (id: number, state: NodeState = "") => (graph.nodes()[id].datum.state = state);

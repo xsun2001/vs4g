@@ -1,10 +1,10 @@
 import { NewGraphAlgorithm, ParameterDescriptor, Step } from "@/GraphAlgorithm";
 import { Edge, Graph, Node, NodeEdgeList } from "@/GraphStructure";
 import { DMPGraph, Face, Fragment } from "./DMPGraph";
-import CanvasGraphRenderer from "@/ui/CanvasGraphRenderer";
-import GraphMatrixInput from "@/ui/GraphMatrixInput";
-import { EdgeListFormatter } from "@/ui/GraphFormatter";
-import { GraphRenderer } from "@/ui/GraphRenderer";
+import NetworkGraphRenderer from "@/ui/render/NetworkGraphRenderer";
+import GraphMatrixInput from "@/ui/input/GraphMatrixInput";
+import { EdgeListFormatter } from "@/ui/input/GraphFormatter";
+import { GraphRenderer } from "@/ui/render/GraphRenderer";
 
 function clear<type>(buf: type[], val: type, cnt: number) {
   for (let _ = 0; _ < cnt; ++_) buf[_] = val;
@@ -20,7 +20,7 @@ export class DMP_alpha implements NewGraphAlgorithm {
     <GraphMatrixInput formatters={[new EdgeListFormatter(false, false)]} checker={g => g} description={""} />
   );
   // TODO: renderType: "dmp" | "splitable"
-  graphRenderer: GraphRenderer = new CanvasGraphRenderer(false, "generic", {
+  graphRenderer: GraphRenderer = new NetworkGraphRenderer(false, "generic", {
     node: {
       floatingData: node => node.datum.displayId || node.id,
       borderColor: node => (node.datum.tag === 2 ? "#00ff00" : undefined),
