@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Graph } from "@/GraphStructure";
 import AlgorithmSteps from "@/ui/AlgorithmSteps";
 import ControlCenter from "@/ui/ControlCenter";
@@ -23,6 +23,11 @@ const GraphEditor: React.FC = props => {
     currentStep: fromReactState<number>([currentStep, setCurrentStep]),
     codePosition: fromReactState<number>([codePosition, setCodePosition])
   };
+
+  useEffect(() => {
+    setGraph(null);
+    setDisplayGraph(null);
+  }, [algorithm]);
 
   return <GraphEditorContext.Provider value={context}>
     <MainCanvas />
