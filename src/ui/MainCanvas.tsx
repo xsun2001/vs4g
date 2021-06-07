@@ -9,6 +9,7 @@ const MainCanvas: React.FC = props => {
   useEffect(() => {
     if (algorithm.value != null && canvasRef.current != null) {
       algorithm.value.graphRenderer.onCanvasUpdated(canvasRef.current);
+      algorithm.value.graphRenderer.bindGraphSetter(g => graph.set(g));
     }
   }, [algorithm.value]);
   useEffect(() => {
@@ -30,8 +31,11 @@ const MainCanvas: React.FC = props => {
     }
   });
   useEffect(() => {
-    if (algorithm.value && controlStep.value !== 3) {
-      algorithm.value.graphRenderer.cleanup();
+    if (algorithm.value) {
+      algorithm.value.graphRenderer.onControlStepUpdated(controlStep.value);
+      if (controlStep.value !== 3) {
+        algorithm.value.graphRenderer.cleanup();
+      }
     }
   }, [controlStep.value]);
 
@@ -42,7 +46,7 @@ const MainCanvas: React.FC = props => {
       height: "100%",
       margin: 0,
       padding: 0
-    }} ref={canvasRef} draggable={true} />
+    }} ref={canvasRef} />
   );
 };
 

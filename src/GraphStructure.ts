@@ -337,7 +337,7 @@ export class GridGraph implements Graph {
   public readonly height;
 
   constructor(public grids: number[][]) {
-    if (grids.some(line => line.length !== grids.length)) {
+    if (grids.some(line => line.length !== grids[0].length)) {
       throw new Error(".graph.grid.error.not_matrix");
     }
     this.height = grids.length;

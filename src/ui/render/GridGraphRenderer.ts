@@ -1,5 +1,6 @@
 import { AbstractGraphRenderer, GraphRenderer } from "@/ui/render/GraphRenderer";
 import { Graph, GridGraph } from "@/GraphStructure";
+import cloneDeep from "lodash.clonedeep";
 
 class GridGraphRenderer extends AbstractGraphRenderer implements GraphRenderer {
   private canvas: HTMLCanvasElement;
@@ -10,6 +11,7 @@ class GridGraphRenderer extends AbstractGraphRenderer implements GraphRenderer {
   private controlStep: number;
   private mouseDown: boolean;
   private graph: GridGraph;
+  private graphCache: GridGraph;
   private graphChanged: boolean;
 
   constructor(private readonly colorMap: Map<number, string>) {
@@ -17,13 +19,13 @@ class GridGraphRenderer extends AbstractGraphRenderer implements GraphRenderer {
   }
 
   flipGrid(x: number, y: number) {
-    const i = (x - this.startX) / this.a, j = (y - this.startY) / this.a;
-    if (i < this.graph.width && j < this.graph.height) {
-      if (this.graph.grids[j][i] === 0) {
+    console.log(x + " " + y);
+    const i = Math.floor((x - this.startX) / this.a), j = Math.floor((y - this.startY) / this.a);
+    if (0 <= i && 0 <= j && i < this.graphCache.width && j < this.graphCache.height) {
+      if (this.graphCache.grids[j][i] === 0) {
         this.graph.grids[j][i] = -1;
         this.graphChanged = true;
-      }
-      if (this.graph.grids[j][i] === -1) {
+      } else if (this.graphCache.grids[j][i] === -1) {
         this.graph.grids[j][i] = 0;
         this.graphChanged = true;
       }
@@ -31,17 +33,27 @@ class GridGraphRenderer extends AbstractGraphRenderer implements GraphRenderer {
   };
 
   mousedown(ev: MouseEvent) {
+    if (this.controlStep !== 2) {
+      return;
+    }
     this.mouseDown = true;
+    this.graphCache = cloneDeep(this.graph);
     this.flipGrid(ev.offsetX, ev.offsetY);
   }
 
   mousemove(ev: MouseEvent) {
+    if (this.controlStep !== 2) {
+      return;
+    }
     if (this.mouseDown) {
       this.flipGrid(ev.offsetX, ev.offsetY);
     }
   }
 
   mouseup(ev: MouseEvent) {
+    if (this.controlStep !== 2) {
+      return;
+    }
     this.mouseDown = false;
     if (this.graphChanged) {
       this.graphSetter(this.graph);
@@ -50,9 +62,9 @@ class GridGraphRenderer extends AbstractGraphRenderer implements GraphRenderer {
 
   onCanvasUpdated(canvas: HTMLCanvasElement): void {
     this.canvas = canvas;
-    this.canvas.addEventListener("mousedown", this.mousedown);
-    this.canvas.addEventListener("mousemove", this.mousemove);
-    this.canvas.addEventListener("mouseup", this.mouseup);
+    this.canvas.addEventListener("mousedown", ev => this.mousedown(ev), false);
+    this.canvas.addEventListener("mousemove", ev => this.mousemove(ev), false);
+    this.canvas.addEventListener("mouseup", ev => this.mouseup(ev), false);
   }
 
   onControlStepUpdated(step: number) {
@@ -60,10 +72,9 @@ class GridGraphRenderer extends AbstractGraphRenderer implements GraphRenderer {
   }
 
   cleanup(): void {
-    this.canvas.getContext("2d").clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.canvas.removeEventListener("mousedown", this.mousedown);
-    this.canvas.removeEventListener("mousemove", this.mousemove);
-    this.canvas.removeEventListener("mouseup", this.mouseup);
+    this.canvas.removeEventListener("mousedown", ev => this.mousedown(ev), false);
+    this.canvas.removeEventListener("mousemove", ev => this.mousemove(ev), false);
+    this.canvas.removeEventListener("mouseup", ev => this.mouseup(ev), false);
     this.mouseDown = false;
   }
 

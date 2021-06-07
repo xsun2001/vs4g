@@ -34,7 +34,7 @@ const AlgorithmPlayer: React.FC = props => {
   const startAutorun = () => {
     const timer = window.setInterval(() => {
       setAutorunCounter(prev => prev + 1);
-    }, 500);
+    }, 100);
     setAutorunTimer(timer);
   };
   const stopAutorun = () => {

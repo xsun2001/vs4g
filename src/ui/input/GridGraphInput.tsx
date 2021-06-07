@@ -10,8 +10,8 @@ const GridGraphInput: GraphInputComponent<any> = props => {
   const spi = useContext<Spi>(SpiContext);
   const _ = spi.locale;
   const { graph, controlStep } = useContext(GraphEditorContext);
-  const [widthString, setWidthString] = useState<string>();
-  const [heightString, setHeightString] = useState<string>();
+  const [widthString, setWidthString] = useState<string>("");
+  const [heightString, setHeightString] = useState<string>("");
   const [error, _setError] = useState<string>(null);
   const setError = e => {
     if (e !== error) _setError(e);
