@@ -1,9 +1,9 @@
 import { NewGraphAlgorithm, ParameterDescriptor, Step } from "@/GraphAlgorithm";
 import { BipartiteGraph, Edge, Graph, Node, NodeEdgeList } from "@/GraphStructure";
-import CanvasGraphRenderer from "@/ui/CanvasGraphRenderer";
-import GraphMatrixInput from "@/ui/GraphMatrixInput";
-import { GraphRenderer } from "@/ui/GraphRenderer";
-import { BipartiteListFormatter, BipartiteMatrixFormatter } from "@/ui/GraphFormatter";
+import NetworkGraphRenderer from "@/ui/render/NetworkGraphRenderer";
+import GraphMatrixInput from "@/ui/input/GraphMatrixInput";
+import { GraphRenderer } from "@/ui/render/GraphRenderer";
+import { BipartiteListFormatter, BipartiteMatrixFormatter } from "@/ui/input/GraphFormatter";
 import { Int_AdjacencyList } from "@/algorithms/matching/Common";
 
 export class HungarianDFS implements NewGraphAlgorithm {
@@ -20,7 +20,7 @@ export class HungarianDFS implements NewGraphAlgorithm {
       }
     />
   );
-  graphRenderer: GraphRenderer = new CanvasGraphRenderer(false, "bipartite", {
+  graphRenderer: GraphRenderer = new NetworkGraphRenderer(false, "bipartite", {
     node: {
       borderColor: node => (node.datum.cur ? "#33ff33" : node.datum.used ? "#ff3333" : undefined),
       fillingColor: node => (node.datum.match !== -1 ? "#ccffcc" : "#eeeeee")

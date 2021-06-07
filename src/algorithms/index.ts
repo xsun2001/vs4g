@@ -1,4 +1,7 @@
 import codeMap from "./codeMap";
+
+import { GridBFS } from "@/algorithms/Grid/GridBFS";
+
 import { NewGraphAlgorithm } from "@/GraphAlgorithm";
 import { Dijkstra } from "@/algorithms/SSSP/Dijkstra";
 import { Ford } from "@/algorithms/SSSP/Ford";
@@ -16,6 +19,7 @@ import { MinCostFlow } from "@/algorithms/networkflow/MinCostFlow";
 import { ZkwMCF } from "@/algorithms/networkflow/ZkwMCF";
 
 const newAlgorithms: NewGraphAlgorithm[] = [
+  new GridBFS(),
   new Dijkstra(),
   new Ford(),
   new DMP_alpha(),

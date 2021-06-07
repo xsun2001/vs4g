@@ -1,10 +1,10 @@
 import { Queue } from "@/utils/DataStructure";
 import { NewGraphAlgorithm, ParameterDescriptor, Step } from "@/GraphAlgorithm";
 import { BipartiteMatrix, Node, Edge, Graph, NodeEdgeList } from "@/GraphStructure";
-import CanvasGraphRenderer from "@/ui/CanvasGraphRenderer";
-import GraphMatrixInput from "@/ui/GraphMatrixInput";
-import { BipartiteMatrixFormatter } from "@/ui/GraphFormatter";
-import { GraphRenderer } from "@/ui/GraphRenderer";
+import NetworkGraphRenderer from "@/ui/render/NetworkGraphRenderer";
+import GraphMatrixInput from "@/ui/input/GraphMatrixInput";
+import { BipartiteMatrixFormatter } from "@/ui/input/GraphFormatter";
+import { GraphRenderer } from "@/ui/render/GraphRenderer";
 
 // !!! alpha version !!!
 export class KuhnMunkres_alpha implements NewGraphAlgorithm {
@@ -23,7 +23,7 @@ export class KuhnMunkres_alpha implements NewGraphAlgorithm {
       description={"Please input a weighted bipartite graph using n*n matrix"}
     />
   );
-  graphRenderer: GraphRenderer = new CanvasGraphRenderer(false, "bipartite", {
+  graphRenderer: GraphRenderer = new NetworkGraphRenderer(false, "bipartite", {
     node: {
       borderColor: node => (node.datum.side === "left" ? undefined : node.datum.label === 1 ? "#77ff77" : "#7777ff"),
       fillingColor: node => (node.datum.in ? "#cccccc" : "#ffffff"),

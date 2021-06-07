@@ -1,6 +1,6 @@
 import { Graph } from "./GraphStructure";
-import { EdgeRenderHint, NodeRenderHint } from "@/ui/CanvasGraphRenderer";
-import { GraphRenderer } from "@/ui/GraphRenderer";
+import { EdgeRenderHint, NodeRenderHint } from "@/ui/render/NetworkGraphRenderer";
+import { GraphRenderer } from "@/ui/render/GraphRenderer";
 
 // check if res = Number(text) is an integer and res \in [lowerbound, upperbound)
 export function parseRangedInt(text: string, lowerbound: number, upperbound: number): number {

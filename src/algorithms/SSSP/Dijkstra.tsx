@@ -1,9 +1,9 @@
 import { NewGraphAlgorithm, ParameterDescriptor, rangedIntParser, Step } from "@/GraphAlgorithm";
-import CanvasGraphRenderer from "@/ui/CanvasGraphRenderer";
+import NetworkGraphRenderer from "@/ui/render/NetworkGraphRenderer";
 import { AdjacencyMatrix, Graph } from "@/GraphStructure";
-import { GraphRenderer } from "@/ui/GraphRenderer";
-import GraphMatrixInput from "@/ui/GraphMatrixInput";
-import { EdgeListFormatter } from "@/ui/GraphFormatter";
+import { GraphRenderer } from "@/ui/render/GraphRenderer";
+import GraphMatrixInput from "@/ui/input/GraphMatrixInput";
+import { EdgeListFormatter } from "@/ui/input/GraphFormatter";
 
 type NodeState = "relaxing" | "updating" | "updated" | "relaxed" | string;
 const stateColorMap: Map<NodeState, string> = new Map([
@@ -20,7 +20,7 @@ export class Dijkstra implements NewGraphAlgorithm {
   graphInputComponent = <GraphMatrixInput checker={g => g}
                                           description={"Please input a weighted & directed graph"}
                                           formatters={[new EdgeListFormatter(true, true)]} />;
-  graphRenderer: GraphRenderer = new CanvasGraphRenderer(true, "generic",
+  graphRenderer: GraphRenderer = new NetworkGraphRenderer(true, "generic",
     {
       node: {
         fillingColor: node => stateColorMap.get(node.datum.state),

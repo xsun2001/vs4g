@@ -1,10 +1,10 @@
 import { NewGraphAlgorithm, ParameterDescriptor, Step } from "@/GraphAlgorithm";
 import { AdjacencyList, hasMultipleEdges, hasSelfLoop, Edge, Graph, Node, NodeEdgeList } from "@/GraphStructure";
 import { Queue } from "@/utils/DataStructure";
-import CanvasGraphRenderer from "@/ui/CanvasGraphRenderer";
-import GraphMatrixInput from "@/ui/GraphMatrixInput";
-import { EdgeListFormatter } from "@/ui/GraphFormatter";
-import { GraphRenderer } from "@/ui/GraphRenderer";
+import NetworkGraphRenderer from "@/ui/render/NetworkGraphRenderer";
+import GraphMatrixInput from "@/ui/input/GraphMatrixInput";
+import { EdgeListFormatter } from "@/ui/input/GraphFormatter";
+import { GraphRenderer } from "@/ui/render/GraphRenderer";
 
 // !!! alpha version !!!
 export class EdmondsGabow_alpha implements NewGraphAlgorithm {
@@ -20,7 +20,7 @@ export class EdmondsGabow_alpha implements NewGraphAlgorithm {
       description={"Please input a graph without self loop and multiple edges"}
     />
   );
-  graphRenderer: GraphRenderer = new CanvasGraphRenderer(false, "generic", {
+  graphRenderer: GraphRenderer = new NetworkGraphRenderer(false, "generic", {
     node: {
       borderColor: node => (node.datum.label === 0 ? "#333333" : node.datum.label === 1 ? "#77ff77" : "#7777ff"),
       fillingColor: node => (node.datum.label === 0 ? "#cccccc" : "#ffffff"),

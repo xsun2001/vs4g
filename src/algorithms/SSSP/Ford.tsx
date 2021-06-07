@@ -1,9 +1,9 @@
 import { NewGraphAlgorithm, ParameterDescriptor, rangedIntParser, Step } from "@/GraphAlgorithm";
-import CanvasGraphRenderer from "@/ui/CanvasGraphRenderer";
+import NetworkGraphRenderer from "@/ui/render/NetworkGraphRenderer";
 import { AdjacencyMatrix, Graph } from "@/GraphStructure";
-import { GraphRenderer } from "@/ui/GraphRenderer";
-import GraphMatrixInput from "@/ui/GraphMatrixInput";
-import { EdgeListFormatter } from "@/ui/GraphFormatter";
+import { GraphRenderer } from "@/ui/render/GraphRenderer";
+import GraphMatrixInput from "@/ui/input/GraphMatrixInput";
+import { EdgeListFormatter } from "@/ui/input/GraphFormatter";
 
 export class Ford implements NewGraphAlgorithm {
   category: string = "SSSP";
@@ -15,7 +15,7 @@ export class Ford implements NewGraphAlgorithm {
       formatters={[new EdgeListFormatter(true, true)]}
     />
   );
-  graphRenderer: GraphRenderer = new CanvasGraphRenderer(true, "generic", {
+  graphRenderer: GraphRenderer = new NetworkGraphRenderer(true, "generic", {
     node: {
       fillingColor: node => (node.datum.visited == true ? "#ffff00" : undefined),
       floatingData: node =>

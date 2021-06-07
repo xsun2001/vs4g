@@ -1,5 +1,5 @@
 import { GraphAlgorithm, Step, ParameterDescriptor } from "../../GraphAlgorithm";
-import { EdgeRenderHint, NodeRenderHint } from "../../ui/CanvasGraphRenderer";
+import { EdgeRenderHint, NodeRenderHint } from "../../ui/render/NetworkGraphRenderer";
 import { AdjacencyMatrix, Graph } from "../../GraphStructure";
 
 class DfsFindPath extends GraphAlgorithm {
