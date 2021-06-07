@@ -78,7 +78,20 @@ module.exports = {
       zero_or_one: "无向图的边中只允许0或1",
       out_of_range: "输入超出有效区间",
       invalid_row_count: "输入矩阵的函数无效",
-      non_matrix: "输入非矩阵"
+      non_matrix: "输入非矩阵",
+      empty: "输入不能为空",
+      not_square: "输入不是方阵",
+      not_matrix: "输入不是矩阵",
+      asymmetric: "输入不是对称矩阵",
+      edge_count_incorrect: "输入边数不合法",
+      edge_format_incorrect: "输入边格式不合法",
+      no_weight: "输入没有权值",
+      non_increment: "输入不递增",
+      invalid_format: "输入格式非法",
+      network: {
+        no_flow: "输入没有流量",
+        no_cost: "输入没有权值"
+      }
     },
     props: {
       node_count: "节点数",
@@ -92,6 +105,19 @@ module.exports = {
     }
   },
   algo: {
+    category: {
+      BfsDfs: "图的遍历",
+      CriticalPath: "关键路径",
+      EulerPath: "欧拉回路",
+      HamiltonPath: "哈密顿回路",
+      MST: "最小生成树",
+      SSSP: "单源最短路",
+      TravelingSalesmanProblem: "旅行商问题",
+      Grid: "网格图",
+      Matching: "匹配",
+      NetworkFlow: "网络流",
+      PlanarGraph: "平面图"
+    },
     Bfs: {
       name: "图的遍历：BFS算法",
       para: {

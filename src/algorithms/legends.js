@@ -53,7 +53,13 @@ module.exports = {
     '<font color="#bbffbb">浅绿色</font>边 $\\color{#bbffbb}\\rightarrow$：在最小费用图中；   \n' +
     '<font color="#dddddd">灰色</font>边 $\\color{#dddddd}\\rightarrow$： 不在最小费用图中；   \n' +
     "边数据 $(c_a,f,c_o)$：$c_a$ 为容量，$f$ 为流量，$c_o$ 为费用。",
-  mbm_hungarian: "",
+  mbm_hungarian:
+    '<font color="#eeeeee">灰色</font>点 $\\color{#eeeeee}\\bullet$：未检查的左侧点，未访问的右侧节点；  \n' +
+    '<font color="#ffcccc">红色</font>点 $\\color{#ffcccc}\\circ$：已检查、未匹配的左侧节点，已访问的右侧节点；  \n' +
+    '<font color="#ccffcc">绿色</font>点 $\\color{#ccffcc}\\bullet$：已匹配点；  \n' +
+    '<font color="#cccccc">灰色</font>边 $\\color{#cccccc}\\leftrightarrow$：未匹配边；  \n' +
+    '<font color="#33ff33">绿色</font>边 $\\color{#33ff33}\\leftrightarrow$：已匹配边；  \n' +
+    '<font color="#ff3333">红色</font>边 $\\color{#ff3333}\\leftrightarrow$：增广路中的非匹配边。  ',
   mwbm_km: "",
   mm_gabow: "",
 

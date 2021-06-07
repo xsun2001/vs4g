@@ -8,7 +8,7 @@ import GraphMatrixInput from "@/ui/input/GraphMatrixInput";
 import { NetworkFormatter } from "@/ui/input/GraphFormatter";
 
 export class EdmondsKarp implements NewGraphAlgorithm {
-  category: string = "network flow";
+  category: string = "NetworkFlow";
   name: string = "mf_ek";
   description: string = "Edmonds-Karp algorithm for Maximum Network Flow";
 

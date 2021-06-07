@@ -39,7 +39,7 @@ let AlgorithmSelector: React.FC = props => {
           options={[...categories.keys()].map(key => ({
             key,
             value: key,
-            text: key
+            text: _(`.algo.category.${key}`)
           }))}
           onChange={onChange(setSelectedCategory)}
           defaultValue={selectedCategory}

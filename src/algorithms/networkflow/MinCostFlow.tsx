@@ -8,7 +8,7 @@ import { GraphRenderer } from "@/ui/render/GraphRenderer";
 import NetworkGraphRenderer from "@/ui/render/NetworkGraphRenderer";
 
 export class MinCostFlow implements NewGraphAlgorithm {
-  category: string = "network flow";
+  category: string = "NetworkFlow";
   name: string = "mcf_classic";
   description: string = "classic algorithm for Minimum-Cost Network Flow";
 

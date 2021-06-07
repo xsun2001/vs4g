@@ -61,45 +61,14 @@ module.exports = {
   },
   mbm_hungarian: {
     pseudo: [
-      "<u>**NOTE**</u>: This Pseudo Code is partially simplified and does NOT strictly correspond to internal implementation.",
-      "**function** <u>Hungarian</u> ($\\mathrm{G}$):",
-      [
-        "**comment**:",
-        [
-          "Hungarian Algorithm for Maximum Bipartite Matching, **return** maximum matching of $\\mathrm{G}$.",
-          "$\\mathrm{G}=\\left(\\mathrm{X},\\mathrm{Y},\\mathrm{E}\\right)$: *bipartite graph*;  $\\mathrm{X},\\mathrm{Y}$: *set* of *vertex*;  $\\mathrm{E}\\subset\\left\\{e=\\left(x,y\\right)\\middle|x\\in\\mathrm{X},y\\in\\mathrm{Y}\\right\\}$: *set* of *edge*;  $\\mathrm{P}$: *augmenting path* in $\\mathrm{G}$."
-        ],
-        "**function** <u>dfsFindAugmentingPathFrom</u> ($x$):",
-        [
-          "**comment**:",
-          [
-            "find *augmenting path* using **DFS**, **return** whether $\\exists$ $\\mathrm{P}$ from $x$.",
-            "$x$: current *vertex*."
-          ],
-          "**for each** $\\left(x,y\\right)\\in\\mathrm{E}$:",
-          [
-            "**if** $y$ is not *visited*:",
-            [
-              "mark $y$ as *visited*.",
-              "**if** $y$ is *matched* with $x'$:",
-              ["**if** <u>dfsFindAugmentingPathFrom</u> ($x'$):  **return** **true**."],
-              "**else**:  $\\color\\red{\\bullet}$  **return** **true**.    **comment**:  found $\\mathrm{P}$ to $y$."
-            ]
-          ],
-          "**return** **false**."
-        ],
-        "$matched:=0$.  $\\color\\red{\\bullet}$",
-        "**for each** $x\\in\\mathrm{X}$:",
-        [
-          "clear *visited* mark **for each** $y\\in\\mathrm{Y}$.",
-          "**if** <u>dfsFindAugmentingPathFrom</u> ($x$):",
-          [
-            "**for each** $e\\in\\mathrm{P}_l$: flip *matching status* of $e$ (*matched* $\\leftrightarrow$ *unmatched*).",
-            "$matched:=matched+1$.  $\\color\\red{\\bullet}$"
-          ]
-        ],
-        "$\\color\\red{\\bullet}$  **return** $matched$."
-      ]
+      "伪代码中用到的一些概念：",
+      "- **增广路**：这里定义为从左侧节点出发，依次交替经过非匹配边、匹配边，在右侧节点结束的一条路径；将增广路上的所有边的匹配状态（匹配/未匹配）翻转，将使匹配数 $+1$；",
+      "- **检查**与**访问**：**检查**过表示**左侧**节点曾在步骤`1`中被选为全局增广路的出发点；**访问**过表示**右侧**节点曾在本轮寻找增广路的过程中被访问过。",
+      "`1` （选定出发点）选择一个未**检查**过的左侧节点 $v_l$ 作为增广路的起点，清空所有右侧节点的**访问**标记，转步骤`2`；若所有左侧节点都被**检查**过，转步骤`5`；",
+      "`2` （枚举相邻点）枚举所有与当前节点 $v_l$ 相连的、未**访问**过的右侧节点 $v_r$，转步骤 `3`；若枚举结束时仍未找到增广路，则回溯到上一层循环步骤（`1`或`2`）;",
+      "`3` （寻找增广路）标记当前节点 $v_r$ 为已**访问**的，若 $v_r$ 未匹配，则找到了一条增广路，转步骤`4`；若 $v_r$ 与某左侧节点 $v_l'$ 匹配，则递归地尝试寻找从 $v_l'$ 出发的增广路，转步骤`2`；",
+      "`4` （增广）翻转增广路上每条边的匹配状态，将匹配数 $matched$ 增大 $1$，转步骤`1`；",
+      "`5` 算法结束。"
     ]
   },
   mwbm_km: {
