@@ -125,10 +125,9 @@ class NetworkGraphRenderer extends AbstractGraphRenderer implements GraphRendere
         .forceSimulation(this.nodes)
         .force("link", d3.forceLink(this.edges).distance(edge => 100)) // default id implement may work
         .force("charge", d3.forceManyBody().strength(this.hint("general", "simulationForceManyBodyStrength")))
-        .force("box", this.boxConstraint());
-      if (this.renderType === "generic") {
-        this.simulation.force("center", d3.forceCenter(this.size.width / 2, this.size.height / 2).strength(0.05));
-      } else if (this.renderType === "bipartite") {
+        .force("box", this.boxConstraint())
+        .force("center", d3.forceCenter(this.size.width / 2, this.size.height / 2).strength(0.05));
+      if (this.renderType === "bipartite") {
         this.simulation.force("bipartite", this.bipartiteConstraint());
       }
       const drag = d3
