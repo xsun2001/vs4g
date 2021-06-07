@@ -19,6 +19,7 @@ export interface GlobalVariable {
   controlStep: State<number>
   parameters: State<any[]>
   currentStep: State<number>
+  codePosition: State<number>
 }
 
 export const GraphEditorContext = createContext<GlobalVariable>(null);

@@ -116,7 +116,6 @@ class NetworkGraphRenderer extends AbstractGraphRenderer implements GraphRendere
   // update function
   // modify information and try to start/restart simulation and rendering
   onGraphUpdated(graph: Graph) {
-    console.log(graph);
     const nodes = graph.nodes().map(toD3NodeDatum);
     const edges = graph.edges().map(toD3EdgeDatum);
     if (this.simulation == null) {
@@ -170,7 +169,6 @@ class NetworkGraphRenderer extends AbstractGraphRenderer implements GraphRendere
   }
 
   onCanvasUpdated(canvas: HTMLCanvasElement): void {
-    console.log(canvas);
     this.canvas = canvas;
     let width = this.canvas.clientWidth, height = this.canvas.clientHeight;
     this.size = { width, height };
@@ -303,6 +301,7 @@ class NetworkGraphRenderer extends AbstractGraphRenderer implements GraphRendere
 
   cleanup(): void {
     if (this.simulation) {
+      this.canvas.getContext("2d").clearRect(0, 0, this.canvas.width, this.canvas.height);
       this.simulation.stop();
       d3.select(this.canvas).on(".drag", null);
       this.simulation = null;

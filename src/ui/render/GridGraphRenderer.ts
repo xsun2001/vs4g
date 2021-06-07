@@ -72,6 +72,7 @@ class GridGraphRenderer extends AbstractGraphRenderer implements GraphRenderer {
   }
 
   cleanup(): void {
+    this.canvas.getContext("2d").clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.canvas.removeEventListener("mousedown", ev => this.mousedown(ev), false);
     this.canvas.removeEventListener("mousemove", ev => this.mousemove(ev), false);
     this.canvas.removeEventListener("mouseup", ev => this.mouseup(ev), false);

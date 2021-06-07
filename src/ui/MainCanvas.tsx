@@ -1,15 +1,19 @@
 import React, { useContext, useEffect, useRef } from "react";
 import { GraphEditorContext } from "@/GraphEditorContext";
 import cloneDeep from "lodash.clonedeep";
+import { GraphRenderer } from "@/ui/render/GraphRenderer";
 
 const MainCanvas: React.FC = props => {
   const { graph, displayGraph, algorithm, controlStep } = useContext(GraphEditorContext);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const lastRenderer = useRef<GraphRenderer>();
 
   useEffect(() => {
+    lastRenderer.current?.cleanup();
     if (algorithm.value != null && canvasRef.current != null) {
       algorithm.value.graphRenderer.onCanvasUpdated(canvasRef.current);
       algorithm.value.graphRenderer.bindGraphSetter(g => graph.set(g));
+      lastRenderer.current = algorithm.value.graphRenderer;
     }
   }, [algorithm.value]);
   useEffect(() => {
@@ -33,9 +37,6 @@ const MainCanvas: React.FC = props => {
   useEffect(() => {
     if (algorithm.value) {
       algorithm.value.graphRenderer.onControlStepUpdated(controlStep.value);
-      if (controlStep.value !== 3) {
-        algorithm.value.graphRenderer.cleanup();
-      }
     }
   }, [controlStep.value]);
 

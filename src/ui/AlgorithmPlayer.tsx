@@ -6,7 +6,7 @@ import cloneDeep from "lodash.clonedeep";
 
 const AlgorithmPlayer: React.FC = props => {
 
-  const { graph, displayGraph, algorithm, currentStep, parameters } = useContext(GraphEditorContext);
+  const { graph, displayGraph, algorithm, currentStep, parameters, codePosition } = useContext(GraphEditorContext);
   const generator = useMemo(() => algorithm.value.run(cloneDeep(graph.value), ...parameters.value), [algorithm.value, graph.value, parameters.value]);
   const [steps, setSteps] = useState<Step[]>([]);
   const [autorunTimer, setAutorunTimer] = useState<number>();
@@ -28,6 +28,7 @@ const AlgorithmPlayer: React.FC = props => {
       setSteps(Array.from(steps));
     }
     displayGraph.set(steps[newStep].graph);
+    codePosition.set(steps[newStep].codePosition.get("pseudo"));
     currentStep.set(newStep);
   }, [autorunTimer, currentStep, displayGraph, generator, steps]);
   useEffect(() => autorunTask(), [autorunCounter]);
@@ -46,8 +47,10 @@ const AlgorithmPlayer: React.FC = props => {
   const previousStep = () => {
     stopAutorun();
     if (currentStep.value > 0) {
-      displayGraph.set(steps[currentStep.value - 1].graph);
-      currentStep.set(currentStep.value - 1);
+      let newStep = currentStep.value - 1;
+      displayGraph.set(steps[newStep].graph);
+      codePosition.set(steps[newStep].codePosition.get("pseudo"));
+      currentStep.set(newStep);
     }
   };
   const nextStep = () => {
@@ -60,12 +63,15 @@ const AlgorithmPlayer: React.FC = props => {
       steps.push(cloneDeep(nxt.value));
       setSteps(Array.from(steps));
     }
-    displayGraph.set(steps[currentStep.value + 1].graph);
-    currentStep.set(currentStep.value + 1);
+    let newStep = currentStep.value + 1;
+    displayGraph.set(steps[newStep].graph);
+    codePosition.set(steps[newStep].codePosition.get("pseudo"));
+    currentStep.set(newStep);
   };
   const restart = () => {
     stopAutorun();
     displayGraph.set(null);
+    codePosition.set(-1);
     currentStep.set(-1);
   };
 

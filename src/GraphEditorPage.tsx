@@ -13,13 +13,15 @@ const GraphEditor: React.FC = props => {
   const [controlStep, setControlStep] = useState<number>(0);
   const [parameters, setParameters] = useState<any[]>();
   const [currentStep, setCurrentStep] = useState<number>(-1);
+  const [codePosition, setCodePosition] = useState<number>(-1);
   const context: GlobalVariable = {
     graph: fromReactState<Graph>([graph, setGraph]),
     displayGraph: fromReactState<Graph>([displayGraph, setDisplayGraph]),
     algorithm: fromReactState<NewGraphAlgorithm>([algorithm, setAlgorithm]),
     controlStep: fromReactState<number>([controlStep, setControlStep]),
     parameters: fromReactState<any[]>([parameters, setParameters]),
-    currentStep: fromReactState<number>([currentStep, setCurrentStep])
+    currentStep: fromReactState<number>([currentStep, setCurrentStep]),
+    codePosition: fromReactState<number>([codePosition, setCodePosition])
   };
 
   return <GraphEditorContext.Provider value={context}>

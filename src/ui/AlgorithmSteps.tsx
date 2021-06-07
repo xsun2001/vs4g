@@ -8,7 +8,7 @@ import { GraphEditorContext } from "@/GraphEditorContext";
 const AlgorithmSteps: React.FC = props => {
   const spi = useContext<Spi>(SpiContext);
   const _ = spi.locale;
-  const { algorithm, currentStep } = useContext(GraphEditorContext);
+  const { algorithm, codePosition } = useContext(GraphEditorContext);
   const [active, setActive] = useState<boolean>(false);
 
   const onAccordionClick = () => setActive(!active);
@@ -19,15 +19,15 @@ const AlgorithmSteps: React.FC = props => {
   ) => {
     let ans: JSX.Element[] = [];
     let selected: string;
-    let codePosition = currentStep.value;
+    let cp = codePosition.value;
     for (let line of element) {
       if (typeof line === "string") {
         ans.push(
-          <Comment.Text key={idx} className={codePosition === idx ? style.currentStep : style.step}>
+          <Comment.Text key={idx} className={cp === idx ? style.currentStep : style.step}>
             <spi.Markdown content={line} />
           </Comment.Text>
         );
-        if (codePosition === idx) {
+        if (cp === idx) {
           selected = line;
         }
         ++idx;
@@ -41,7 +41,7 @@ const AlgorithmSteps: React.FC = props => {
       }
     }
     return [ans, idx, selected];
-  }, [currentStep.value, spi]);
+  }, [codePosition.value, spi]);
 
   const rendered: [JSX.Element[], number, string] = React.useMemo(() => {
     if (algorithm.value)
@@ -57,7 +57,7 @@ const AlgorithmSteps: React.FC = props => {
       bottom: "0px",
       padding: "20px"
     }}>
-      {(algorithm.value == null || currentStep.value < 0) ? (
+      {(algorithm.value == null || codePosition.value < 0) ? (
         <Segment>
           <Header>
             Waiting for algorithm start
