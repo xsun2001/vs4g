@@ -6,7 +6,7 @@ import GraphMatrixInput from "@/ui/input/GraphMatrixInput";
 import { NetworkFormatter } from "@/ui/input/GraphFormatter";
 
 export class FordFulkerson implements NewGraphAlgorithm {
-  category: string = "network flow";
+  category: string = "NetworkFlow";
   name: string = "mf_ff";
   description: string = "Ford-Fulkerson algorithm for Maximum Network Flow";
 

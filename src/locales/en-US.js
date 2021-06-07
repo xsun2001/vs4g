@@ -78,7 +78,20 @@ module.exports = {
       zero_or_one: "Only 0 & 1 allowed",
       out_of_range: "Out of Range",
       invalid_row_count: "Invalid row count",
-      non_matrix: "Not a matrix"
+      non_matrix: "Not a matrix",
+      empty: "Empty input",
+      not_square: "Not a matrix",
+      not_matrix: "Not a square matrix",
+      asymmetric: "Not a symmetric matrix",
+      edge_count_incorrect: "incorrect edge count",
+      edge_format_incorrect: "incorrect edge format",
+      no_weight: "No weight",
+      non_increment: "Non increment",
+      invalid_format: "Invalid format",
+      network: {
+        no_flow: "No flow",
+        no_cost: "No cost"
+      }
     },
     props: {
       node_count: "Node count",
@@ -92,6 +105,19 @@ module.exports = {
     }
   },
   algo: {
+    category: {
+      BfsDfs: "Graph Traversal",
+      CriticalPath: "Critical Path",
+      EulerPath: "Euler Path",
+      HamiltonPath: "Hamilton Path",
+      MST: "Minimum Spanning Tree",
+      SSSP: "Single Source Shortest Path",
+      TravelingSalesmanProblem: "Traveling Salesman Problem",
+      Grid: "Grid",
+      Matching: "Matching",
+      NetworkFlow: "Network Flow",
+      PlanarGraph: "Planar Graph"
+    },
     BFS: {
       name: "Graph Traversal: BFS",
       para: {

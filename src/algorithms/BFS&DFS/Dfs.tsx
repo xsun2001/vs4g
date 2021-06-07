@@ -6,7 +6,7 @@ import GraphMatrixInput from "@/ui/input/GraphMatrixInput";
 import { EdgeListFormatter } from "@/ui/input/GraphFormatter";
 
 export class Dfs implements NewGraphAlgorithm {
-  category: string = "BFS&DFS";
+  category: string = "BfsDfs";
   name: string = "Dfs";
   description: string = "Dfs";
   graphInputComponent = (
