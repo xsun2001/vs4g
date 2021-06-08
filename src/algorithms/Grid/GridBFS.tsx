@@ -26,7 +26,7 @@ const positionParameter: (name: string) => ParameterDescriptor = name => (
 
 export class GridBFS implements NewGraphAlgorithm {
   category: string = "Grid";
-  description: string = "BFS";
+  description: string = "GridBfs";
   graphInputComponent: JSX.Element = <GridGraphInput />;
   graphRenderer: GraphRenderer = new GridGraphRenderer(new Map(
     [[-1, "#000000"], // Border
@@ -37,7 +37,7 @@ export class GridBFS implements NewGraphAlgorithm {
       [4, "#cd11e2"], // End point
       [5, "#FF0000"]] // Path
   ));
-  name: string = "BFS";
+  name: string = "GridBfs";
   parameters: ParameterDescriptor[] = [
     positionParameter("start"),
     positionParameter("end")

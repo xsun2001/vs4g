@@ -118,6 +118,13 @@ module.exports = {
       NetworkFlow: "网络流",
       PlanarGraph: "平面图"
     },
+    GridBfs: {
+      name: "网格BFS算法",
+      para: {
+        start: "起始点",
+        end: "结束点"
+      }
+    },
     Bfs: {
       name: "图的遍历：BFS算法",
       para: {
