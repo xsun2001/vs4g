@@ -5,6 +5,7 @@ import ControlCenter from "@/ui/ControlCenter";
 import { fromReactState, GlobalVariable, GraphEditorContext } from "@/GraphEditorContext";
 import { NewGraphAlgorithm } from "@/GraphAlgorithm";
 import MainCanvas from "@/ui/MainCanvas";
+import LegendDisplay from "@/ui/LegendDisplay";
 
 const GraphEditor: React.FC = props => {
   const [graph, setGraph] = useState<Graph>();
@@ -33,6 +34,7 @@ const GraphEditor: React.FC = props => {
     <MainCanvas />
     <ControlCenter />
     <AlgorithmSteps />
+    <LegendDisplay />
   </GraphEditorContext.Provider>;
 };
 
