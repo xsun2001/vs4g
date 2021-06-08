@@ -5,7 +5,7 @@ import GridGraphInput from "@/ui/input/GridGraphInput";
 import GridGraphRenderer from "@/ui/render/GridGraphRenderer";
 import { Queue } from "@/utils/DataStructure";
 
-const step = (grids: number[][]) => new Step(new GridGraph(grids));
+const step = (grids: number[][], cp: number) => new Step(new GridGraph(grids), new Map([["pseudo", cp]]));
 const positionParameter: (name: string) => ParameterDescriptor = name => (
   {
     name,
@@ -53,17 +53,18 @@ export class GridBFS implements NewGraphAlgorithm {
     let q = new Queue<[number, number]>();
     grids[startY][startX] = 3;
     grids[endY][endX] = 4;
-    yield step(grids);
+    yield step(grids, 0);
 
     q.push([startY, startX]);
     grids[startY][startX] = 2;
-    yield step(grids);
+    yield step(grids, 0);
 
     let found: boolean = false;
     while (!q.empty() && !found) {
       const [y, x] = q.front();
       q.pop();
       grids[y][x] = 1;
+      yield step(grids, 2);
       for (let i = 0; i < 4; i++) {
         const [ny, nx] = [y + dy[i], x + dx[i]];
         if (ny < 0 || nx < 0 || ny >= grids.length || nx >= grids[0].length) {
@@ -80,9 +81,13 @@ export class GridBFS implements NewGraphAlgorithm {
         }
       }
       grids[startY][startX] = 3;
-      yield step(grids);
+      yield step(grids, 3);
     }
 
+    if (pre[endY][endX] < 0) {
+      yield step(grids, 5);
+      return;
+    }
     let [y, x] = [endY, endX];
     for (; ;) {
       let predir = pre[y][x];
@@ -92,6 +97,6 @@ export class GridBFS implements NewGraphAlgorithm {
       }
       grids[y][x] = 5;
     }
-    yield step(grids);
+    yield step(grids, 4);
   }
 }
