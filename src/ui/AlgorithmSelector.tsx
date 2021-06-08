@@ -8,7 +8,7 @@ import { Spi, SpiContext } from "@/spi";
 let AlgorithmSelector: React.FC = props => {
   const spi = useContext<Spi>(SpiContext);
   const _ = spi.locale;
-  const { algorithm, controlStep, currentStep } = useContext(GraphEditorContext);
+  const { graph, displayGraph, algorithm, controlStep, currentStep } = useContext(GraphEditorContext);
   const categories = new Map<string, Map<string, NewGraphAlgorithm>>();
   newAlgorithms.forEach(algo => {
     const cat = algo.category;
@@ -24,8 +24,10 @@ let AlgorithmSelector: React.FC = props => {
   const onChange: (func: (newValue: string) => void) => ((_, { value: string }) => void)
     = func => ((_, { value }) => func(value));
   const onConfirm = () => {
-    algorithm.set(categories.get(selectedCategory).get(selectedAlgorithm));
+    graph.set(null);
+    displayGraph.set(null);
     currentStep.set(-1);
+    algorithm.set(categories.get(selectedCategory).get(selectedAlgorithm));
     controlStep.set(1);
   };
 

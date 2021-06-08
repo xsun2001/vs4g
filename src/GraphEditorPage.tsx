@@ -25,11 +25,6 @@ const GraphEditor: React.FC = props => {
     codePosition: fromReactState<number>([codePosition, setCodePosition])
   };
 
-  useEffect(() => {
-    setGraph(null);
-    setDisplayGraph(null);
-  }, [algorithm]);
-
   return <GraphEditorContext.Provider value={context}>
     <MainCanvas />
     <ControlCenter />
