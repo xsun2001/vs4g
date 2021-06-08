@@ -28,7 +28,7 @@ const AlgorithmPlayer: React.FC = props => {
       setSteps(Array.from(steps));
     }
     displayGraph.set(steps[newStep].graph);
-    codePosition.set(steps[newStep].codePosition.get("pseudo"));
+    codePosition.set(steps[newStep].codePosition?.get("pseudo"));
     currentStep.set(newStep);
   }, [autorunTimer, currentStep, displayGraph, generator, steps]);
   useEffect(() => autorunTask(), [autorunCounter]);

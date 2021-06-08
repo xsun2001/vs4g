@@ -19,7 +19,6 @@ class GridGraphRenderer extends AbstractGraphRenderer implements GraphRenderer {
   }
 
   flipGrid(x: number, y: number) {
-    console.log(x + " " + y);
     const i = Math.floor((x - this.startX) / this.a), j = Math.floor((y - this.startY) / this.a);
     if (0 <= i && 0 <= j && i < this.graphCache.width && j < this.graphCache.height) {
       if (this.graphCache.grids[j][i] === 0) {
