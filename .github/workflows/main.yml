@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - gtdh
+  pull_request:
+
+env:
+  CI: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out
+      uses: actions/checkout@v2
+    - name: Set up Node
+      uses: actions/setup-node@v2-beta
+      with:
+        node-version: 14.x
+    - name: Install
+      run: yarn
+    - name: Test
+      run: yarn test --watchAll=false --silent
+    - name: Build
+      run: yarn build
+    - name: Deploy
+      if: contains(github.ref, 'refs/tags/')
+      uses: burnett01/rsync-deployments@4.1
+      with:
+        switches: -avzr --delete
+        path: build/
+        remote_path: /opt/vs4g-static
+        remote_host: ${{ secrets.DEPLOY_HOST }}
+        remote_port: ${{ secrets.DEPLOY_PORT }}
+        remote_user: ${{ secrets.DEPLOY_USER }}
+        remote_key: ${{ secrets.DEPLOY_KEY }}
